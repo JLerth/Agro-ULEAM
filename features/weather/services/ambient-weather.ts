@@ -4,7 +4,7 @@ import type {
     StationResponse,
     WeatherData,
     DeviceSummary,
-} from "@/features/weather/types/ambient-weather";
+} from "@/features/weather/types/ambient-weather.types";
 
 const API_URL = `${STATION_CONFIG.apiBaseUrl}/devices?public.slug=${STATION_CONFIG.publicSlug}`;
 

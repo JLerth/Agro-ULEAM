@@ -1,7 +1,7 @@
 import type {
     AccuWeatherDailyResponse,
     AccuWeatherHourlyResponse,
-} from "@/features/weather/types/accuweather";
+} from "@/features/weather/types/accuweather.types";
 
 const API_KEY = process.env.EXPO_PUBLIC_ACCUWEATHER_API_KEY;
 const LOCATION_KEY = process.env.EXPO_PUBLIC_ACCUWEATHER_LOCATION_KEY;

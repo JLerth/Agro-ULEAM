@@ -9,7 +9,7 @@ import type {
     DeviceSummary,
     TemperatureRange,
     WeatherData,
-} from "@/features/weather/types/ambient-weather";
+} from "@/features/weather/types/ambient-weather.types";
 
 import {
     fahrenheitToCelsius,
@@ -117,7 +117,11 @@ function calculatePressureRate(
     }
 
     const first = validReadings[0];
-    const last = validReadings[validReadings.length - 1];
+    const last = validReadings.at(-1);
+
+    if (!last) {
+        return null;
+    }
 
     const elapsedHours = (last.dateutc - first.dateutc) / 3_600_000;
 
