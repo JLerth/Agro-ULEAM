@@ -129,10 +129,15 @@ export function useWeatherData(): UseWeatherDataReturn {
 
         const clearTimer = (key: RequestKey) => {
             const timer = timers.get(key);
-            if (timer) {
+            if (timer !== undefined) {
                 clearTimeout(timer);
                 timers.delete(key);
             }
+        };
+
+        const clearAllTimers = () => {
+            timers.forEach(clearTimeout);
+            timers.clear();
         };
 
         // Backoff exponencial: 30 s, 60 s, 120 s... hasta 5 min.
@@ -267,8 +272,7 @@ export function useWeatherData(): UseWeatherDataReturn {
             controller.abort();
             clearInterval(interval);
             unsubscribeNetInfo();
-            timers.forEach((timer) => clearTimeout(timer));
-            timers.clear();
+            clearAllTimers();
             engineRef.current = null;
         };
     }, []);
