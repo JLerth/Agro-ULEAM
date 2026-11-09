@@ -27,7 +27,11 @@ function withTimeout(signal?: AbortSignal) {
     };
 }
 
-export async function getAccuWeatherForecast(signal?: AbortSignal): Promise<AccuWeatherDailyResponse> {
+async function fetchAccuWeather<T>(
+    endpoint: string,
+    errorMessage: string,
+    signal?: AbortSignal
+): Promise<T> {
     if (!API_KEY || !LOCATION_KEY) {
         throw new Error(
             "Falta configurar las credenciales de AccuWeather."
@@ -35,7 +39,7 @@ export async function getAccuWeatherForecast(signal?: AbortSignal): Promise<Accu
     }
 
     const url = new URL(
-        `https://dataservice.accuweather.com/forecasts/v1/daily/7day/${LOCATION_KEY}`
+        `https://dataservice.accuweather.com/${endpoint}/${LOCATION_KEY}`
     );
 
     url.searchParams.set("apikey", API_KEY);
@@ -52,49 +56,31 @@ export async function getAccuWeatherForecast(signal?: AbortSignal): Promise<Accu
         });
 
         if (!response.ok) {
-            throw new Error(
-                `Error al consultar AccuWeather: ${response.status}`
-            );
+            throw new Error(`${errorMessage}: ${response.status}`);
         }
 
-        return (await response.json()) as AccuWeatherDailyResponse;
+        return (await response.json()) as T;
     } finally {
         request.clear();
     }
 }
 
-export async function getAccuWeatherHourlyForecast(signal?: AbortSignal): Promise<AccuWeatherHourlyResponse> {
-    if (!API_KEY || !LOCATION_KEY) {
-        throw new Error(
-            "Falta configurar las credenciales de AccuWeather."
-        );
-    }
-
-    const url = new URL(
-        `https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${LOCATION_KEY}`
+export function getAccuWeatherForecast(
+    signal?: AbortSignal
+): Promise<AccuWeatherDailyResponse> {
+    return fetchAccuWeather<AccuWeatherDailyResponse>(
+        "forecasts/v1/daily/7day",
+        "Error al consultar AccuWeather",
+        signal
     );
+}
 
-    url.searchParams.set("apikey", API_KEY);
-    url.searchParams.set("details", "true");
-    url.searchParams.set("metric", "true");
-    url.searchParams.set("language", "es-ec");
-
-    const request = withTimeout(signal);
-
-    try {
-        const response = await fetch(url.toString(), {
-            cache: "no-store",
-            signal: request.signal,
-        });
-
-        if (!response.ok) {
-            throw new Error(
-                `Error al consultar el pronóstico horario: ${response.status}`
-            );
-        }
-
-        return (await response.json()) as AccuWeatherHourlyResponse;
-    } finally {
-        request.clear();
-    }
+export function getAccuWeatherHourlyForecast(
+    signal?: AbortSignal
+): Promise<AccuWeatherHourlyResponse> {
+    return fetchAccuWeather<AccuWeatherHourlyResponse>(
+        "forecasts/v1/hourly/12hour",
+        "Error al consultar el pronóstico horario",
+        signal
+    );
 }
