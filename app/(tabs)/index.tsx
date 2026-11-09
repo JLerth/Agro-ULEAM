@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native';
+import { Text, View } from "@/components/Themed";
 
-export default function Home() {
-  return (
-    <View>
-      <Text>agro-uleam</Text>
-    </View>
-  );
+export default function HomeScreen() {
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Text>Inicio</Text>
+        </View>
+    );
 }
