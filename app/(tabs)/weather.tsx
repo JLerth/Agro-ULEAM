@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Button, ScrollView } from "react-native";
 
 import { Text, View } from "@/components/Themed";
+import { TriangleExclamationPoint } from 'lucide-react-native';
 
 import { useWeatherData } from "@/features/weather/hooks/use-weather";
 import { useAccuWeather } from "@/features/weather/hooks/use-accuweather";
@@ -14,6 +15,12 @@ import { buildSunMoon } from "@/features/weather/utils/sun-moon";
 import { buildOutdoor } from "@/features/weather/utils/outdoor";
 import { buildHumidity } from "@/features/weather/utils/humidity";
 import { buildPressure } from "@/features/weather/utils/pressure";
+
+function LastConnectionWarning({ visible }: { readonly visible: boolean }) {
+    if (!visible) return null;
+
+    return <Text><TriangleExclamationPoint color="#ffa50a" size={16}/>Datos de la última conexión</Text>;
+}
 
 export default function WeatherScreen() {
     // Datos de Ambient Weather
@@ -132,12 +139,26 @@ export default function WeatherScreen() {
         [currentData, pressureChangeData]
     );
 
-    const weatherErrors = [
-        currentError && `Actual: ${currentError}`,
-        historicalError && `Histórico: ${historicalError}`,
-        yesterdayError && `Ayer: ${yesterdayError}`,
-        pressureChangeError && `Presión: ${pressureChangeError}`,
-    ].filter(Boolean);
+    const hasErrors = Boolean(
+        currentError ||
+        historicalError ||
+        yesterdayError ||
+        pressureChangeError ||
+        forecastError
+    );
+
+    const hasForecastData = Boolean(
+        sunMoonData ||
+        hourlyData.length > 0 ||
+        (dailyData?.DailyForecasts.length ?? 0) > 0
+    );
+
+    const retryAllFailed = async() => {
+        await Promise.all([
+            retryWeather(),
+            retryForecast(),
+        ]);
+    };
 
     return (
         <ScrollView>
@@ -145,30 +166,24 @@ export default function WeatherScreen() {
                 <Text>Cargando...</Text>
             )}
 
-            {/* Errores de Ambient Weather */}
-            {weatherErrors.map((message) => (
-                <Text key={message as string}>{message}</Text>
-            ))}
-
-            {weatherErrors.length > 0 && (
-                <Button title="Reintentar clima" onPress={retryWeather} />
-            )}
-
-            {/* Error de AccuWeather */}
-            {forecastError && (
-                <View>
-                    <Text>Pronóstico: {forecastError}</Text>
-                    <Button
-                        title="Reintentar pronóstico"
-                        onPress={retryForecast}
-                    />
-                </View>
+            {/* Errores globales de Ambient Weather y AccuWeather */}
+            {hasErrors && (
+                <Button
+                    title="Reintentar datos"
+                    onPress={retryAllFailed}
+                />
             )}
 
             {/* 1. Quick View */}
             {quickSections && (
                 <View key={quickSections.id}>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{quickSections.title}</Text>
+                    <LastConnectionWarning visible={Boolean(
+                            (currentError && currentData) ||
+                            (historicalError && historicalData) ||
+                            (yesterdayError && yesterdayData) ||
+                            (pressureChangeError && pressureChangeData)
+                        )} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{quickSections.title}</Text>
 
                     {quickSections.sections.map((section) => (
                         <View key={section.id}>
@@ -187,7 +202,8 @@ export default function WeatherScreen() {
 
             {/* 2. Forecast */}
             <View>
-                <Text style={{ fontWeight: "bold", fontSize: 16 }}>{forecastSection.title}</Text>
+                <LastConnectionWarning visible={Boolean(forecastError && hasForecastData)} />
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>{forecastSection.title}</Text>
 
                 <Text style={{ fontWeight: "bold"}}>Pronóstico por horas</Text>
 
@@ -219,7 +235,8 @@ export default function WeatherScreen() {
             {/* 3. Wind */}
             {windSection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{windSection.title}</Text>
+                    <LastConnectionWarning visible={Boolean(currentError && currentData)} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{windSection.title}</Text>
 
                     {windSection.metrics.map((metric) => (
                         <View key={metric.id}>
@@ -233,7 +250,8 @@ export default function WeatherScreen() {
             {/* 4. Rainfall */}
             {rainfallSection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{rainfallSection.title}</Text>
+                    <LastConnectionWarning visible={Boolean(currentError && currentData)} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{rainfallSection.title}</Text>
 
                     {rainfallSection.metrics.map((metric) => (
                         <View key={metric.id}>
@@ -247,7 +265,8 @@ export default function WeatherScreen() {
             {/* 5. Sun & Moon */}
             {sunMoonSection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{sunMoonSection.title}</Text>
+                    <LastConnectionWarning visible={Boolean(forecastError && sunMoonData)} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{sunMoonSection.title}</Text>
 
                     {sunMoonSection.metrics.map((metric) => (
                         <View key={metric.id}>
@@ -261,7 +280,8 @@ export default function WeatherScreen() {
             {/* 6. Outdoor */}
             {outdoorSection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{outdoorSection.title}</Text>
+                    <LastConnectionWarning visible={Boolean((currentError && currentData) || (yesterdayError && yesterdayData))} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{outdoorSection.title}</Text>
 
                     {outdoorSection.metrics.map((metric) => (
                         <View key={metric.id}>
@@ -275,7 +295,8 @@ export default function WeatherScreen() {
             {/* 7. Humidity */}
             {humiditySection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{humiditySection.title}</Text>
+                    <LastConnectionWarning visible={Boolean((currentError && currentData) || (yesterdayError && yesterdayData))} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{humiditySection.title}</Text>
 
                     {humiditySection.metrics.map((metric) => (
                         <View key={metric.id}>
@@ -289,7 +310,8 @@ export default function WeatherScreen() {
             {/* 8. Pressure */}
             {pressureSection && (
                 <View>
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>{pressureSection.title}</Text>
+                    <LastConnectionWarning visible={Boolean((currentError && currentData) || (pressureChangeError && pressureChangeData))} />
+                    <Text style={{ fontWeight: "bold", fontSize: 18 }}>{pressureSection.title}</Text>
 
                     {pressureSection.metrics.map((metric) => (
                         <View key={metric.id}>

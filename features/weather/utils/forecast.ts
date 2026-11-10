@@ -146,24 +146,24 @@ export function buildForecast({
 
     return {
         id: "forecast",
-        title: "Forecast",
+        title: "Pronostico",
 
         hourly: hourlyForecast.map((hour, index) => ({
             id: hour.DateTime,
             metrics: [
                 metric(
                     "time",
-                    "Time",
+                    "Tiempo",
                     index === 0 ? "Ahora" : formatTime(hour.DateTime)
                 ),
                 metric(
                     "temperature",
-                    "Temperature",
+                    "Temperatura",
                     `${formatValue(hour.Temperature.Value)} °C`
                 ),
                 metric(
                     "condition",
-                    "Condition",
+                    "Condición",
                     hour.IconPhrase || NO_VALUE
                 ),
             ],
@@ -174,27 +174,27 @@ export function buildForecast({
             metrics: [
                 metric(
                     "weekday",
-                    "Day",
+                    "Día",
                     formatWeekday(day.Date)
                 ),
                 metric(
                     "maximum",
-                    "Maximum",
+                    "Máxima",
                     `${formatValue(day.Temperature.Maximum.Value)} °C`
                 ),
                 metric(
                     "minimum",
-                    "Minimum",
+                    "Mínima",
                     `${formatValue(day.Temperature.Minimum.Value)} °C`
                 ),
                 metric(
                     "day-precipitation",
-                    "Day Precipitation",
+                    "Precipitación de Día",
                     `${formatValue(day.Day.PrecipitationProbability ?? null)}%`
                 ),
                 metric(
                     "night-precipitation",
-                    "Night Precipitation",
+                    "Precipitación de Noche",
                     `${formatValue(day.Night.PrecipitationProbability ?? null)}%`
                 ),
             ],

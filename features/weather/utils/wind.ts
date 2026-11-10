@@ -80,31 +80,31 @@ function metric(
 export function buildWind(wind: WindInput): WindSection {
     return {
         id: "wind",
-        title: "Wind",
+        title: "Viento",
         metrics: [
             metric(
                 "average-direction",
-                "10 Minute",
+                "Cada 10 Minutos",
                 getWindDirection(wind.averageDirection)
             ),
             metric(
                 "speed",
-                "Speed",
+                "Velocidad",
                 `${formatValue(wind.speed)} km/h`
             ),
             metric(
                 "max-daily-gust",
-                "Today's Peak",
+                "Máxima Ráfaga Diaria",
                 `${formatValue(wind.maxDailyGust)} km/h`
             ),
             metric(
                 "direction",
-                "From",
+                "Dirección",
                 getWindDirection(wind.direction)
             ),
             metric(
                 "gust",
-                "Gusts",
+                "Ráfagas",
                 `${formatValue(wind.gust)} km/h`
             ),
         ],

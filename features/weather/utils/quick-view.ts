@@ -133,70 +133,70 @@ export function buildQuickView({
 
     return {
         id: "quick-view",
-        title: "Quick View",
+        title: "Vista Rapida",
         sections: [
             {
                 id: "outdoor",
-                title: "Outdoor",
+                title: "Exterior",
                 metrics: [
-                    metric("temperature", "Temperature", withUnit(outdoor.temperature, 1, "°C")),
+                    metric("temperature", "Temperatura", withUnit(outdoor.temperature, 1, "°C")),
                     metric(
                         "temperature-from-yesterday",
-                        "From Yesterday",
+                        "Respecto a Ayer",
                         withSign(yesterday?.temperatureFromYesterday, 1, "°C")
                     ),
-                    metric("feels-like", "Feels Like", withUnit(outdoor.feelsLike, 1, "°C")),
-                    metric("today-range", "Today's High/Low", formatRange(current.historical.today)),
-                    metric("yesterday-range", "Yesterday's High/Low", formatRange(past?.yesterday)),
-                    metric("weekly-range", "Weekly High/Low", formatRange(past?.weekly)),
-                    metric("monthly-range", "Monthly High/Low", formatRange(past?.monthly)),
-                    metric("yearly-range", "Yearly High/Low", formatRange(past?.yearly)),
+                    metric("feels-like", "Sensación Térmica", withUnit(outdoor.feelsLike, 1, "°C")),
+                    metric("today-range", "Máxima y Mínima de Hoy", formatRange(current.historical.today)),
+                    metric("yesterday-range", "Máxima y Mínima de Ayer", formatRange(past?.yesterday)),
+                    metric("weekly-range", "Máxima y Mínima de la Semana", formatRange(past?.weekly)),
+                    metric("monthly-range", "Máxima y Mínima del Mes", formatRange(past?.monthly)),
+                    //metric("yearly-range", "Máxima y Mínima del Año", formatRange(past?.yearly)),
                 ],
             },
             {
                 id: "wind",
-                title: "Wind",
+                title: "Viento",
                 metrics: [
-                    metric("speed", "Speed", withUnit(wind.speed, 1, " km/h")),
-                    metric("gust", "Gust", withUnit(wind.gust, 1, " km/h")),
-                    metric("max-daily-gust", "Max Daily Gust", withUnit(wind.maxDailyGust, 1, " km/h")),
-                    metric("direction", "Direction", formatDegrees(wind.direction)),
+                    metric("speed", "Velocidad", withUnit(wind.speed, 1, " km/h")),
+                    metric("gust", "Ráfaga", withUnit(wind.gust, 1, " km/h")),
+                    metric("max-daily-gust", "Máxima Ráfaga Diaria", withUnit(wind.maxDailyGust, 1, " km/h")),
+                    metric("direction", "Dirección", formatDegrees(wind.direction)),
                     metric(
                         "average-direction",
-                        "Avg Direction (10 mins)",
+                        "Dirección Promedio (10 mins)",
                         formatDegrees(wind.averageDirection)
                     ),
                 ],
             },
             {
                 id: "rain",
-                title: "Rain",
+                title: "Lluvia",
                 metrics: [
-                    metric("rate", "Rate", withUnit(rainfall.hourly, 2, " mm/h")),
-                    metric("daily", "Daily", withUnit(rainfall.daily, 2, " mm")),
-                    metric("weekly", "Weekly", withUnit(rainfall.weekly, 2, " mm")),
-                    metric("event", "Event", withUnit(rainfall.event, 2, " mm")),
-                    metric("monthly", "Monthly", withUnit(rainfall.monthly, 2, " mm")),
-                    metric("yearly", "Yearly", withUnit(rainfall.yearly, 2, " mm")),
+                    metric("rate", "Intensidad", withUnit(rainfall.hourly, 2, " mm/h")),
+                    metric("daily", "Diario", withUnit(rainfall.daily, 2, " mm")),
+                    metric("weekly", "Semanal", withUnit(rainfall.weekly, 2, " mm")),
+                    metric("event", "Evento", withUnit(rainfall.event, 2, " mm")),
+                    metric("monthly", "Mensual", withUnit(rainfall.monthly, 2, " mm")),
+                    metric("yearly", "Anual", withUnit(rainfall.yearly, 2, " mm")),
                     metric("total", "Total", withUnit(rainfall.total, 2, " mm")),
                 ],
             },
             {
                 id: "pressure",
-                title: "Pressure",
+                title: "Presión",
                 metrics: [
-                    metric("relative", "Relative", withUnit(pressure.relative, 1, " hPa")),
-                    metric("rate", "Rate", withSign(pressureChange?.pressureRate, 2, " hPa/hr")),
+                    metric("relative", "Relativa", withUnit(pressure.relative, 1, " hPa")),
+                    metric("rate", "Tasa", withSign(pressureChange?.pressureRate, 2, " hPa/hr")),
                 ],
             },
             {
                 id: "humidity",
-                title: "Humidity",
+                title: "Humedad",
                 metrics: [
-                    metric("current", "Humidity", withUnit(humidity.current, 0, "%")),
+                    metric("current", "Humedad", withUnit(humidity.current, 0, "%")),
                     metric(
                         "humidity-from-yesterday",
-                        "From Yesterday",
+                        "Respecto a Ayer",
                         withSign(yesterday?.humidityFromYesterday, 0, "%")
                     ),
                 ],

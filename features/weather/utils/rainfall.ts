@@ -62,36 +62,36 @@ export function buildRainfall(
 ): RainfallSection {
     return {
         id: "rainfall",
-        title: "Rainfall",
+        title: "Lluvia",
         metrics: [
             metric(
                 "rate",
-                "Rate",
+                "Intensidad",
                 `${formatValue(rainfall.hourly)} mm/h`
             ),
             metric(
                 "daily",
-                "Day",
+                "Diario",
                 `${formatValue(rainfall.daily)} mm`
             ),
             metric(
                 "event",
-                "Event",
+                "Evento",
                 `${formatValue(rainfall.event)} mm`
             ),
             metric(
                 "weekly",
-                "Week",
+                "Semanal",
                 `${formatValue(rainfall.weekly)} mm`
             ),
             metric(
                 "monthly",
-                "Month",
+                "Mensual",
                 `${formatValue(rainfall.monthly)} mm`
             ),
             metric(
                 "yearly",
-                "Year",
+                "Anual",
                 `${formatValue(rainfall.yearly)} mm`
             ),
             metric(
@@ -101,7 +101,7 @@ export function buildRainfall(
             ),
             metric(
                 "last-rain",
-                "Last Rainfall",
+                "Última Lluvia",
                 rainfall.lastRain ?? NO_VALUE
             ),
         ],
