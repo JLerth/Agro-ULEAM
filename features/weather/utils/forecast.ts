@@ -9,6 +9,7 @@ interface HourlyForecastInput {
     Temperature: {
         Value: number;
     };
+    WeatherIcon: number;
     IconPhrase: string;
 }
 
@@ -23,6 +24,7 @@ interface DailyForecastInput {
         };
     };
     Day: {
+        Icon: number;
         PrecipitationProbability?: number | null;
     };
     Night: {
@@ -39,17 +41,21 @@ interface ForecastInput {
 
 export interface ForecastMetric {
     id: string;
-    label: string;
+    //label: string;
     value: string;
 }
 
 export interface HourlyForecast {
     id: string;
+    isCurrentHour: boolean;
+    weatherIcon: number;
     metrics: ForecastMetric[];
 }
 
 export interface DailyForecast {
     id: string;
+    isToday: boolean;
+    weatherIcon: number;
     metrics: ForecastMetric[];
 }
 
@@ -92,7 +98,22 @@ function formatTime(value: string): string {
         hour12: true,
     }).format(date);
 }
+/**
+ * Comprueba si el pronóstico corresponde a la hora que está transcurriendo.
+ */
+function isCurrentHour(value: string): boolean {
+    const forecastDate = new Date(value);
 
+    if (Number.isNaN(forecastDate.getTime())) {
+        return false;
+    }
+
+    const now = Date.now();
+    const forecastStart = forecastDate.getTime();
+    const forecastEnd = forecastStart + 60 * 60 * 1000;
+
+    return now >= forecastStart && now < forecastEnd;
+}
 /**
  * Convierte una fecha en la inicial del día de la semana.
  */
@@ -123,10 +144,10 @@ function formatWeekday(value: string): string {
 
 function metric(
     id: string,
-    label: string,
+    //label: string,
     value: string
 ): ForecastMetric {
-    return { id, label, value };
+    return { id, value };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -142,59 +163,80 @@ export function buildForecast({
     dailyData,
 }: ForecastInput): ForecastSection {
     const hourlyForecast = hourlyData.slice(0, 12);
-    const dailyForecast = dailyData?.DailyForecasts ?? [];
+    const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
+        const dailyForecast = (dailyData?.DailyForecasts ?? [])
+            .filter((day) => {
+                const forecastDate = new Date(day.Date);
+                forecastDate.setHours(0, 0, 0, 0);
+
+                return forecastDate >= today;
+            })
+            .slice(0, 7);
+
+        console.log(
+        "ACCuweather fechas:",
+        dailyForecast.map((day) => ({
+            date: day.Date,
+            weekday: formatWeekday(day.Date),
+            today: new Date(day.Date).toDateString() === new Date().toDateString(),
+        }))
+    );
     return {
         id: "forecast",
         title: "Pronostico",
 
-        hourly: hourlyForecast.map((hour, index) => ({
-            id: hour.DateTime,
-            metrics: [
-                metric(
-                    "time",
-                    "Tiempo",
-                    index === 0 ? "Ahora" : formatTime(hour.DateTime)
-                ),
-                metric(
-                    "temperature",
-                    "Temperatura",
-                    `${formatValue(hour.Temperature.Value)} °C`
-                ),
-                metric(
-                    "condition",
-                    "Condición",
-                    hour.IconPhrase || NO_VALUE
-                ),
-            ],
-        })),
+        hourly: hourlyForecast.map((hour) => {
+            const currentHour = isCurrentHour(hour.DateTime);
+
+            return {
+                id: hour.DateTime,
+                isCurrentHour: currentHour,
+                weatherIcon: hour.WeatherIcon,
+                metrics: [
+                    metric(
+                        "time",
+                        currentHour
+                            ? "Ahora"
+                            : formatTime(hour.DateTime)
+                    ),
+                    metric(
+                        "temperature",
+                        `${formatValue(hour.Temperature.Value)} °C`
+                    ),
+                ],
+            };
+        }),
 
         daily: dailyForecast.map((day) => ({
             id: day.Date,
+            isToday: new Date(day.Date).toDateString() === new Date().toDateString(),
+            weatherIcon: day.Day.Icon,
             metrics: [
                 metric(
                     "weekday",
-                    "Día",
+                    //"Día",
                     formatWeekday(day.Date)
                 ),
                 metric(
                     "maximum",
-                    "Máxima",
+                    //"Máxima",
                     `${formatValue(day.Temperature.Maximum.Value)} °C`
                 ),
                 metric(
                     "minimum",
-                    "Mínima",
+                    //"Mínima",
                     `${formatValue(day.Temperature.Minimum.Value)} °C`
                 ),
                 metric(
                     "day-precipitation",
-                    "Precipitación de Día",
+                    //"Precipitación de Día",
                     `${formatValue(day.Day.PrecipitationProbability ?? null)}%`
                 ),
                 metric(
                     "night-precipitation",
-                    "Precipitación de Noche",
+                    //"Precipitación de Noche",
                     `${formatValue(day.Night.PrecipitationProbability ?? null)}%`
                 ),
             ],

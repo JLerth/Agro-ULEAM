@@ -58,6 +58,7 @@ interface UseAccuWeatherReturn {
 const REFRESH_INTERVAL = 15 * 60 * 1000;
 const RETRY_BASE_DELAY = 30 * 1000;
 const MAX_RETRY_DELAY = 5 * 60 * 1000;
+const HOUR_IN_MS = 60 * 60 * 1000;
 
 const DEFAULT_ERRORS: Record<RequestKey, string> = {
     daily: "No se pudo obtener el pronóstico diario.",
@@ -71,13 +72,37 @@ const initialState: State = {
 
 function reducer(state: State, action: Action): State {
     switch (action.type) {
-        case "success":
-            return { ...state, [action.key]: { data: action.data, error: null } };
+        case "success": {
+            if (action.key === "hourly") {
+                return {
+                    ...state,
+                    hourly: {
+                        data: mergeHourlyForecast(
+                            state.hourly.data,
+                            action.data
+                        ),
+                        error: null,
+                    },
+                };
+            }
+
+            return {
+                ...state,
+                daily: {
+                    data: action.data,
+                    error: null,
+                },
+            };
+        }
+
         case "error":
             // Conserva los últimos datos buenos y solo actualiza el error.
             return {
                 ...state,
-                [action.key]: { ...state[action.key], error: action.error },
+                [action.key]: {
+                    ...state[action.key],
+                    error: action.error,
+                },
             };
     }
 }
@@ -86,6 +111,40 @@ function record<T>(value: T): Record<RequestKey, T> {
     return { daily: value, hourly: value };
 }
 
+function mergeHourlyForecast(
+    previous: AccuWeatherHourlyResponse | null,
+    incoming: AccuWeatherHourlyResponse
+): AccuWeatherHourlyResponse {
+    const previousNow = previous?.[0];
+
+    if (!previousNow) {
+        return incoming.slice(0, 12);
+    }
+
+    const now = Date.now();
+    const previousTimestamp = new Date(previousNow.DateTime).getTime();
+
+    if (
+        Number.isNaN(previousTimestamp) ||
+        now >= previousTimestamp + HOUR_IN_MS
+    ) {
+        return incoming.slice(0, 12);
+    }
+
+    const currentForecast =
+        incoming.find(
+            (hour) => hour.DateTime === previousNow.DateTime
+        ) ?? previousNow;
+
+    const remainingForecasts = incoming.filter(
+        (hour) => hour.DateTime !== currentForecast.DateTime
+    );
+
+    return [
+        currentForecast,
+        ...remainingForecasts,
+    ].slice(0, 12);
+}
 /* -------------------------------------------------------------------------- */
 /* Hook                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -111,6 +170,7 @@ export function useAccuWeather(): UseAccuWeatherReturn {
 
         // La validación de la respuesta vive en cada fetcher.
         const fetchers: { [K in RequestKey]: () => Promise<DataMap[K]> } = {
+            
             daily: async () => {
                 const result = await getAccuWeatherForecast(signal);
 
@@ -126,6 +186,14 @@ export function useAccuWeather(): UseAccuWeatherReturn {
             },
             hourly: async () => {
                 const result = await getAccuWeatherHourlyForecast(signal);
+
+                console.log(
+                    "Pronóstico horario recibido:",
+                    result.map((hour) => ({
+                        date: hour.DateTime,
+                        temperature: hour.Temperature.Value,
+                    }))
+                );
 
                 if (!Array.isArray(result) || result.length === 0) {
                     throw new Error("La respuesta horaria no contiene pronósticos válidos.");

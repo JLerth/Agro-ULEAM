@@ -1,7 +1,8 @@
-import { StyleSheet } from "react-native";
-import { Moon, Bell } from "lucide-react-native";
+import { Pressable, StyleSheet } from "react-native";
+import { Moon, Sun, Bell } from "lucide-react-native";
 
 import { View, Text } from "@/components/Themed";
+import { useColorScheme, useToggleTheme } from "@/components/useColorScheme";
 
 type AppHeaderProps = {
     readonly subtitle: string;
@@ -9,15 +10,32 @@ type AppHeaderProps = {
 };
 
 export default function AppHeader({ subtitle, title }: AppHeaderProps) {
+    const colorScheme = useColorScheme();
+    const toggleTheme = useToggleTheme();
+
+    const isDark = colorScheme === "dark";
+
     return (
         <View colorName="primary" style={styles.container}>
-            <View lightColor="#246B4A" darkColor="#246B4A" style={styles.titleContainer}>
-                <Text lightColor="#FFFFFF" darkColor="#FFFFFF" style={styles.subtitle}>
-                {subtitle}
+            <View
+                lightColor="#246B4A"
+                darkColor="#246B4A"
+                style={styles.titleContainer}
+            >
+                <Text
+                    lightColor="#FFFFFF"
+                    darkColor="#FFFFFF"
+                    style={styles.subtitle}
+                >
+                    {subtitle}
                 </Text>
 
-                <Text lightColor="#FFFFFF" darkColor="#FFFFFF" style={styles.title}>
-                {title}
+                <Text
+                    lightColor="#FFFFFF"
+                    darkColor="#FFFFFF"
+                    style={styles.title}
+                >
+                    {title}
                 </Text>
             </View>
 
@@ -27,7 +45,21 @@ export default function AppHeader({ subtitle, title }: AppHeaderProps) {
                 style={styles.themeButton}
             >
                 <Bell color="#FFFFFF" size={24} />
-                <Moon color="#FFFFFF" size={24} />
+
+                <Pressable
+                    onPress={toggleTheme}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                        isDark ? "Activar modo claro" : "Activar modo oscuro"
+                    }
+                    hitSlop={10}
+                >
+                    {isDark ? (
+                        <Sun color="#FFFFFF" size={24} />
+                    ) : (
+                        <Moon color="#FFFFFF" size={24} />
+                    )}
+                </Pressable>
             </View>
         </View>
     );
