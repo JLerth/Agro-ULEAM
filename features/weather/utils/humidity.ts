@@ -68,16 +68,16 @@ export function buildHumidity(data: HumidityInput): HumiditySection {
 
     return {
         id: "humidity",
-        title: "Humidity",
+        title: "Humedad",
         metrics: [
             metric(
                 "current",
-                "Humidity",
+                "Humedad",
                 `${formatValue(humidity.current)}%`
             ),
             metric(
                 "humidity-from-yesterday",
-                "From Yesterday",
+                "Respecto de Ayer",
                 `${formatChange(changes.humidityFromYesterday)}%`
             ),
         ],

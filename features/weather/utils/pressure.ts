@@ -60,18 +60,18 @@ export function buildPressure(data: PressureInput): PressureSection {
 
     return {
         id: "pressure",
-        title: "Pressure",
+        title: "Presión",
         metrics: [
             metric(
                 "pressure-rate",
-                "Pressure Rate",
+                "Tasa",
                 changes.pressureRate === null
                     ? NO_VALUE
                     : `${formatValue(changes.pressureRate)} hPa/h`
             ),
             metric(
                 "relative",
-                "Pressure Gauge",
+                "Relativa",
                 `${formatValue(pressure.relative)} hPa`
             ),
         ],

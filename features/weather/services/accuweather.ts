@@ -69,7 +69,7 @@ export function getAccuWeatherForecast(
     signal?: AbortSignal
 ): Promise<AccuWeatherDailyResponse> {
     return fetchAccuWeather<AccuWeatherDailyResponse>(
-        "forecasts/v1/daily/7day",
+        "forecasts/v1/daily/10day",
         "Error al consultar AccuWeather",
         signal
     );

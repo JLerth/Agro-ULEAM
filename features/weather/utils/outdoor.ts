@@ -76,26 +76,26 @@ export function buildOutdoor(data: OutdoorInput): OutdoorSection {
 
     return {
         id: "outdoor",
-        title: "Outdoor",
+        title: "Exterior",
         metrics: [
             metric(
                 "temperature",
-                "Temperature",
+                "Temperatura",
                 `${formatValue(outdoor.temperature)}°`
             ),
             metric(
                 "dew-point",
-                "Dew Point",
+                "Punto de Rociado",
                 `${formatValue(outdoor.dewPoint)}°C`
             ),
             metric(
                 "temperature-from-yesterday",
-                "From Yesterday",
+                "Respecto de Ayer",
                 `${formatChange(changes.temperatureFromYesterday)}°C`
             ),
             metric(
                 "feels-like",
-                "Feels Like",
+                "Sensación Térmica",
                 `${formatValue(outdoor.feelsLike)}°C`
             ),
         ],
