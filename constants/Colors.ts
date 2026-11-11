@@ -13,7 +13,7 @@ export default {
   },
   dark: {
     text: "#FFFFFF",
-    background: "#121A15",
+    background: "#0d0f0e",
     surface: "#1C2921",
     border: "#34443A",
     primary,

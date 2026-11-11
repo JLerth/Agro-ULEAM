@@ -44,7 +44,7 @@ export default function AppHeader({ subtitle, title }: AppHeaderProps) {
                 darkColor="#246B4A"
                 style={styles.themeButton}
             >
-                <Bell color="#FFFFFF" size={24} />
+                <Bell color="#FFFFFF" size={26} />
 
                 <Pressable
                     onPress={toggleTheme}
@@ -55,9 +55,9 @@ export default function AppHeader({ subtitle, title }: AppHeaderProps) {
                     hitSlop={10}
                 >
                     {isDark ? (
-                        <Sun color="#FFFFFF" size={24} />
+                        <Sun color="#FFFFFF" size={26} />
                     ) : (
-                        <Moon color="#FFFFFF" size={24} />
+                        <Moon color="#FFFFFF" size={26} />
                     )}
                 </Pressable>
             </View>

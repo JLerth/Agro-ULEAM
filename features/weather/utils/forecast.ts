@@ -174,15 +174,6 @@ export function buildForecast({
                 return forecastDate >= today;
             })
             .slice(0, 7);
-
-        console.log(
-        "ACCuweather fechas:",
-        dailyForecast.map((day) => ({
-            date: day.Date,
-            weekday: formatWeekday(day.Date),
-            today: new Date(day.Date).toDateString() === new Date().toDateString(),
-        }))
-    );
     return {
         id: "forecast",
         title: "Pronostico",

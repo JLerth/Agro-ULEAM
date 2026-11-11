@@ -187,14 +187,6 @@ export function useAccuWeather(): UseAccuWeatherReturn {
             hourly: async () => {
                 const result = await getAccuWeatherHourlyForecast(signal);
 
-                console.log(
-                    "Pronóstico horario recibido:",
-                    result.map((hour) => ({
-                        date: hour.DateTime,
-                        temperature: hour.Temperature.Value,
-                    }))
-                );
-
                 if (!Array.isArray(result) || result.length === 0) {
                     throw new Error("La respuesta horaria no contiene pronósticos válidos.");
                 }
