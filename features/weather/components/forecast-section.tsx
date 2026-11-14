@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { ComponentRef } from "react";
+import { useNavigation } from "expo-router";
 import { Pressable, ScrollView } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
@@ -62,6 +63,16 @@ export function ForecastSection({
         });
     };
 
+    const navigation = useNavigation();
+
+    const handleHourlyTouchStart = () => {
+        navigation.setOptions({ swipeEnabled: false });
+    };
+
+    const handleHourlyTouchEnd = () => {
+        navigation.setOptions({ swipeEnabled: true });
+    };
+
     return (
         <View
             style={[
@@ -120,6 +131,9 @@ export function ForecastSection({
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.hourlyList}
                     scrollEventThrottle={16}
+                    onTouchStart={handleHourlyTouchStart}
+                    onTouchEnd={handleHourlyTouchEnd}
+                    onTouchCancel={handleHourlyTouchEnd}
                     onScroll={(event) => {
                         hourlyScrollPosition.current =
                             event.nativeEvent.contentOffset.x;
@@ -183,6 +197,9 @@ export function ForecastSection({
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    onTouchStart={handleHourlyTouchStart}
+                    onTouchEnd={handleHourlyTouchEnd}
+                    onTouchCancel={handleHourlyTouchEnd}
                     contentContainerStyle={[
                         styles.dailyList,
                         { minWidth: dailyContainerWidth },

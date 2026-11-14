@@ -19,7 +19,7 @@ export function QuickViewSection({
     data,
     showLastConnectionWarning,
 }: QuickViewSectionProps) {
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
     const cardBackground = useThemeColor(
         { light: "#FFFFFF", dark: "#1C2921" },
@@ -57,6 +57,8 @@ export function QuickViewSection({
             <Pressable
                 onPress={() => setExpanded((previous) => !previous)}
                 style={styles.quickHeader}
+                accessibilityRole="button"
+                accessibilityLabel="Expandir o contraer vista rápida"
             >
                 <View style={[styles.quickHeaderText, { backgroundColor: "transparent" }]}>
                     <Text style={[styles.sectionTitle, { color: textColor }]}>
