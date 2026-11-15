@@ -23,8 +23,7 @@ export default function AppHeader({ items, position }: AppHeaderProps) {
     return (
         <View colorName="primary" style={styles.container}>
             <View
-                lightColor="#246B4A"
-                darkColor="#246B4A"
+                colorName="primary"
                 style={styles.titleContainer}
             >
                 {items.map((item, index) => {
@@ -64,8 +63,7 @@ export default function AppHeader({ items, position }: AppHeaderProps) {
             </View>
 
             <View
-                lightColor="#246B4A"
-                darkColor="#246B4A"
+                colorName="primary"
                 style={styles.themeButton}
             >
                 <Bell color="#FFFFFF" size={26} />

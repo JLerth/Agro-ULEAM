@@ -127,23 +127,13 @@ export default function TabLayout() {
                                             extrapolate: "clamp",
                                         });
 
-                                        const animatedColor = position.interpolate({
-                                            inputRange: [index - 1, index, index + 1],
-                                            outputRange: [
-                                                themeColors.tabIconDefault,
-                                                themeColors.tabIconSelected,
-                                                themeColors.tabIconDefault,
+                                        const bubbleOpacity = position.interpolate({
+                                            inputRange: [
+                                                index - 0.15,
+                                                index,
+                                                index + 0.15,
                                             ],
-                                            extrapolate: "clamp",
-                                        });
-
-                                        const animatedBackgroundColor = position.interpolate({
-                                            inputRange: [index - 1, index, index + 1],
-                                            outputRange: [
-                                                "transparent",
-                                                themeColors.primary + "20",
-                                                "transparent",
-                                            ],
+                                            outputRange: [0, 1, 0],
                                             extrapolate: "clamp",
                                         });
 
@@ -180,27 +170,60 @@ export default function TabLayout() {
                                                         borderRadius: 16,
                                                         alignItems: "center",
                                                         justifyContent: "center",
-                                                        backgroundColor: animatedBackgroundColor,
+                                                        position: "relative",
                                                     }}
                                                 >
+                                                    {/* Burbuja de selección */}
+                                                    <Animated.View
+                                                        pointerEvents="none"
+                                                        style={{
+                                                            position: "absolute",
+                                                            width: 52,
+                                                            height: 32,
+                                                            borderRadius: 16,
+                                                            backgroundColor: themeColors.primary + "20",
+                                                            opacity: bubbleOpacity,
+                                                        }}
+                                                    />
+                                                    {/* Icono inactivo */}
                                                     <Animated.View style={{ position: "absolute", opacity: inactiveOpacity }}>
                                                         <Ionicons name={inactiveIcon} size={24} color={themeColors.tabIconDefault} />
                                                     </Animated.View>
-
+                                                    {/* Icono activo */}
                                                     <Animated.View style={{ position: "absolute", opacity: activeOpacity }}>
                                                         <Ionicons name={activeIcon} size={24} color={themeColors.tabIconSelected} />
                                                     </Animated.View>
                                                 </Animated.View>
 
-                                                <Animated.Text
+                                                <View
                                                     style={{
-                                                        color: animatedColor,
-                                                        fontSize: 11,
                                                         marginTop: 3,
+                                                        position: "relative",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        backgroundColor: "transparent",
                                                     }}
                                                 >
-                                                    {options.title ?? route.name}
-                                                </Animated.Text>
+                                                    <Animated.Text
+                                                        style={{
+                                                            color: themeColors.tabIconDefault,
+                                                            fontSize: 11,
+                                                        }}
+                                                    >
+                                                        {options.title ?? route.name}
+                                                    </Animated.Text>
+
+                                                    <Animated.Text
+                                                        style={{
+                                                            position: "absolute",
+                                                            color: themeColors.tabIconSelected,
+                                                            fontSize: 11,
+                                                            opacity: activeOpacity,
+                                                        }}
+                                                    >
+                                                        {options.title ?? route.name}
+                                                    </Animated.Text>
+                                                </View>
                                             </Pressable>
                                         );
                                     })}

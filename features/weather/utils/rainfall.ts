@@ -99,11 +99,11 @@ export function buildRainfall(
                 "Total",
                 `${formatValue(rainfall.total)} mm`
             ),
-            metric(
-                "last-rain",
-                "Última Lluvia",
-                rainfall.lastRain ?? NO_VALUE
-            ),
+            // metric(
+            //     "last-rain",
+            //     "Última Lluvia",
+            //     rainfall.lastRain ?? NO_VALUE
+            // ),
         ],
     };
 }
