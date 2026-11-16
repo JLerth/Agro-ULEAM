@@ -42,6 +42,34 @@ export function QuickViewSection({
         "primary"
     );
 
+    const renderSection = (section: QuickViewData["sections"][number]) => (
+        <View style={styles.metricSection}>
+            <Text style={[styles.categoryTitle, { color: categoryTextColor }]}>
+                {section.title}
+            </Text>
+
+            <View style={styles.metricsGrid}>
+                {section.metrics.map((metric) => (
+                    <View
+                        key={metric.id}
+                        style={[
+                            styles.metricCard,
+                            { backgroundColor: metricBackground },
+                        ]}
+                    >
+                        <Text style={[styles.metricLabel, { color: secondaryTextColor }]}>
+                            {metric.label}
+                        </Text>
+
+                        <Text style={[styles.metricValue, { color: textColor }]}>
+                            {metric.value}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+        </View>
+    );
+
     return (
         <View
             style={[
@@ -84,36 +112,43 @@ export function QuickViewSection({
                         visible={showLastConnectionWarning}
                     />
 
-                    {data.sections.map((section) => (
-                        <View
-                            key={section.id}
-                            style={styles.metricSection}
-                        >
-                            <Text style={[styles.categoryTitle, { color: categoryTextColor }]}>
-                                {section.title}
-                            </Text>
+                    {(() => {
+                        const pressure = data.sections.find(
+                            (section) => section.id === "pressure"
+                        );
 
-                            <View style={styles.metricsGrid}>
-                                {section.metrics.map((metric) => (
-                                    <View
-                                        key={metric.id}
-                                        style={[
-                                            styles.metricCard,
-                                            { backgroundColor: metricBackground },
-                                        ]}
-                                    >
-                                        <Text style={[styles.metricLabel, { color: secondaryTextColor }]}>
-                                            {metric.label}
-                                        </Text>
+                        const humidity = data.sections.find(
+                            (section) => section.id === "humidity"
+                        );
 
-                                        <Text style={[styles.metricValue, { color: textColor }]}>
-                                            {metric.value}
-                                        </Text>
+                        return (
+                            <>
+                                {data.sections
+                                    .filter(
+                                        (section) =>
+                                            section.id !== "pressure" &&
+                                            section.id !== "humidity"
+                                    )
+                                    .map((section) => (
+                                        <View key={section.id}>
+                                            {renderSection(section)}
+                                        </View>
+                                    ))}
+
+                                {pressure && humidity && (
+                                    <View style={{ flexDirection: "row", gap: 8 }}>
+                                        <View style={{ flex: 1 }}>
+                                            {renderSection(pressure)}
+                                        </View>
+
+                                        <View style={{ flex: 1 }}>
+                                            {renderSection(humidity)}
+                                        </View>
                                     </View>
-                                ))}
-                            </View>
-                        </View>
-                    ))}
+                                )}
+                            </>
+                        );
+                    })()}
                 </View>
             )}
         </View>

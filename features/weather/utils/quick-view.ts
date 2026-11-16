@@ -140,16 +140,16 @@ export function buildQuickView({
                 title: "Exterior",
                 metrics: [
                     metric("temperature", "Temperatura", withUnit(outdoor.temperature, 1, "°C")),
-                    metric(
-                        "temperature-from-yesterday",
-                        "Respecto a Ayer",
-                        withSign(yesterday?.temperatureFromYesterday, 1, "°C")
-                    ),
+                    // metric(
+                    //     "temperature-from-yesterday",
+                    //     "Respecto a Ayer",
+                    //     withSign(yesterday?.temperatureFromYesterday, 1, "°C")
+                    // ),
                     metric("feels-like", "Sensación Térmica", withUnit(outdoor.feelsLike, 1, "°C")),
                     metric("today-range", "Máxima y Mínima de Hoy", formatRange(current.historical.today)),
                     metric("yesterday-range", "Máxima y Mínima de Ayer", formatRange(past?.yesterday)),
-                    metric("weekly-range", "Máxima y Mínima de la Semana", formatRange(past?.weekly)),
-                    metric("monthly-range", "Máxima y Mínima del Mes", formatRange(past?.monthly)),
+                    //metric("weekly-range", "Máxima y Mínima de la Semana", formatRange(past?.weekly)),
+                    //metric("monthly-range", "Máxima y Mínima del Mes", formatRange(past?.monthly)),
                     //metric("yearly-range", "Máxima y Mínima del Año", formatRange(past?.yearly)),
                 ],
             },
@@ -161,11 +161,11 @@ export function buildQuickView({
                     metric("gust", "Ráfaga", withUnit(wind.gust, 1, " km/h")),
                     metric("max-daily-gust", "Máxima Ráfaga Diaria", withUnit(wind.maxDailyGust, 1, " km/h")),
                     metric("direction", "Dirección", formatDegrees(wind.direction)),
-                    metric(
-                        "average-direction",
-                        "Dirección Promedio (10 mins)",
-                        formatDegrees(wind.averageDirection)
-                    ),
+                    // metric(
+                    //     "average-direction",
+                    //     "Dirección Promedio (10 mins)",
+                    //     formatDegrees(wind.averageDirection)
+                    // ),
                 ],
             },
             {
@@ -174,11 +174,11 @@ export function buildQuickView({
                 metrics: [
                     metric("rate", "Intensidad", withUnit(rainfall.hourly, 2, " mm/h")),
                     metric("daily", "Diario", withUnit(rainfall.daily, 2, " mm")),
-                    metric("weekly", "Semanal", withUnit(rainfall.weekly, 2, " mm")),
+                    //metric("weekly", "Semanal", withUnit(rainfall.weekly, 2, " mm")),
                     metric("event", "Evento", withUnit(rainfall.event, 2, " mm")),
                     metric("monthly", "Mensual", withUnit(rainfall.monthly, 2, " mm")),
-                    metric("yearly", "Anual", withUnit(rainfall.yearly, 2, " mm")),
-                    metric("total", "Total", withUnit(rainfall.total, 2, " mm")),
+                    //metric("yearly", "Anual", withUnit(rainfall.yearly, 2, " mm")),
+                    //metric("total", "Total", withUnit(rainfall.total, 2, " mm")),
                 ],
             },
             {
@@ -186,7 +186,7 @@ export function buildQuickView({
                 title: "Presión",
                 metrics: [
                     metric("relative", "Relativa", withUnit(pressure.relative, 1, " hPa")),
-                    metric("rate", "Tasa", withSign(pressureChange?.pressureRate, 2, " hPa/hr")),
+                    //metric("rate", "Tasa", withSign(pressureChange?.pressureRate, 2, " hPa/hr")),
                 ],
             },
             {
@@ -194,11 +194,11 @@ export function buildQuickView({
                 title: "Humedad",
                 metrics: [
                     metric("current", "Humedad", withUnit(humidity.current, 0, "%")),
-                    metric(
-                        "humidity-from-yesterday",
-                        "Respecto a Ayer",
-                        withSign(yesterday?.humidityFromYesterday, 0, "%")
-                    ),
+                    // metric(
+                    //     "humidity-from-yesterday",
+                    //     "Respecto a Ayer",
+                    //     withSign(yesterday?.humidityFromYesterday, 0, "%")
+                    // ),
                 ],
             },
         ],

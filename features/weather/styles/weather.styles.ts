@@ -78,24 +78,19 @@ export const weatherStyles = StyleSheet.create({
         gap: 18,
         overflow: "hidden",
     },
-
     forecastHeader: {
         marginBottom: 2,
     },
-
     forecastHeaderText: {
         gap: 4,
     },
-
     forecastGroup: {
         gap: 12,
     },
-
     hourlyList: {
         gap: 10,
         paddingRight: 16,
     },
-
     hourlyCard: {
         width: 125,
         borderRadius: 14,
@@ -103,14 +98,12 @@ export const weatherStyles = StyleSheet.create({
         padding: 12,
         gap: 12,
     },
-
     dailyList: {
         flexDirection: "row",
         justifyContent: "space-between",
         gap: 6,
         paddingVertical: 12,
     },
-
     dailyCard: {
         flex: 1,
         minWidth: 0,
@@ -121,41 +114,34 @@ export const weatherStyles = StyleSheet.create({
         borderRadius: 14,
         borderWidth: 1,
     },
-
     dailyTemperature: {
         fontSize: 14,
         fontWeight: "700",
     },
-
     dailyMinimum: {
         fontSize: 12,
     },
-
     forecastMetric: {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "transparent",
     },
-
     forecastValue: {
         fontSize: 14,
         fontWeight: "600",
     },
-
     forecastTitleRow: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
     },
-
     scrollHint: {
         flexDirection: "row",
         alignItems: "center",
         gap: 6,
         backgroundColor: "transparent",
     },
-
     scrollButton: {
         width: 32,
         height: 32,
@@ -163,28 +149,69 @@ export const weatherStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-
     dailyPrecipitation: {
         alignItems: "center",
         gap: 5,
         backgroundColor: "transparent",
         width: "100%",
     },
-
     precipitationLabel: {
         fontSize: 10,
     },
-
     precipitationValue: {
         fontSize: 11,
         fontWeight: "600",
     },
-
     dailyCardToday: {
         borderWidth: 1.5,
     },
-
     dailyTodayText: {
         fontWeight: "800",
+    },
+/* -------------------------------------------------------------------------- */
+/* Weather metrics                                                            */
+/* -------------------------------------------------------------------------- */
+    weatherMetricSection: {
+        backgroundColor: "transparent",
+        borderRadius: 20,
+        borderWidth: 1,
+        marginHorizontal: 16,
+        marginTop: 12,
+        marginBottom: 24,
+        padding: 14,
+        gap: 18,
+        overflow: "hidden",
+    },
+    weatherMetricSectionCompact: {
+        flex: 1,
+        minWidth: 0,
+        width: 0,
+        marginHorizontal: 0,
+        marginTop: 0,
+        marginBottom: 0,
+        padding: 12,
+        gap: 12,
+    },
+    metricCardCompact: {
+        width: "100%",
+        flexGrow: 0,
+        flexShrink: 1,
+        borderRadius: 14,
+        borderWidth: 1,
+        padding: 12,
+        gap: 6,
+    },
+    weatherMetricsRow: {
+        flexDirection: "row",
+        alignItems: "stretch",
+        gap: 12,
+        marginHorizontal: 16,
+        marginTop: 12,
+        marginBottom: 24,
+    },
+    metricsGridCompact: {
+        flexDirection: "column",
+        width: "100%",
+        gap: 8,
     },
 });

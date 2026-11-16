@@ -14,11 +14,13 @@ interface WeatherMetricSectionProps {
         readonly metrics: readonly WeatherMetric[];
     };
     readonly showLastConnectionWarning: boolean;
+    readonly compact?: boolean;
 }
 
 export function WeatherMetricSection({
     data,
     showLastConnectionWarning,
+    compact = false,
 }: WeatherMetricSectionProps) {
     // Colores del tema
     const cardBackground = useThemeColor({}, "surface");
@@ -39,7 +41,8 @@ export function WeatherMetricSection({
     return (
         <View
             style={[
-                styles.forecastSection,
+                styles.weatherMetricSection,
+                compact && styles.weatherMetricSectionCompact,
                 {
                     backgroundColor: cardBackground,
                     borderColor,
@@ -84,7 +87,7 @@ export function WeatherMetricSection({
             >
                 <View
                     style={[
-                        styles.metricsGrid,
+                        compact ? styles.metricsGridCompact : styles.metricsGrid,
                         { backgroundColor: "transparent" },
                     ]}
                 >
@@ -92,7 +95,7 @@ export function WeatherMetricSection({
                         <View
                             key={metric.id}
                             style={[
-                                styles.metricCard,
+                                compact ? styles.metricCardCompact : styles.metricCard,
                                 { backgroundColor: metricBackground, borderColor },
                             ]}
                         >

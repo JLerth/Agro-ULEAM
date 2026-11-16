@@ -1,7 +1,7 @@
 import { useMemo} from "react";
 import { Button, ScrollView} from "react-native";
 
-import { Text, useThemeColor } from "@/components/Themed";
+import { Text, View, useThemeColor } from "@/components/Themed";
 
 import { useWeatherData } from "@/features/weather/hooks/use-weather";
 import { useAccuWeather } from "@/features/weather/hooks/use-accuweather";
@@ -18,6 +18,8 @@ import { buildPressure } from "@/features/weather/utils/pressure";
 import { QuickViewSection } from "@/features/weather/components/quick-view-section";
 import { ForecastSection } from "@/features/weather/components/forecast-section";
 import { WeatherMetricSection } from "@/features/weather/components/weather-metric-section";
+
+import { weatherStyles } from "@/features/weather/styles/weather.styles";
 
 export default function WeatherScreen() {
     // Datos de Ambient Weather
@@ -156,6 +158,56 @@ export default function WeatherScreen() {
             retryForecast(),
         ]);
     };
+    
+    const renderHumidityPressure = () => {
+        if (humiditySection && pressureSection) {
+            return (
+                <View style={weatherStyles.weatherMetricsRow}>
+                    <WeatherMetricSection
+                        data={humiditySection}
+                        showLastConnectionWarning={Boolean(
+                            (currentError && currentData) ||
+                            (yesterdayError && yesterdayData)
+                        )}
+                        compact
+                    />
+
+                    <WeatherMetricSection
+                        data={pressureSection}
+                        showLastConnectionWarning={Boolean(
+                            (currentError && currentData) ||
+                            (pressureChangeError && pressureChangeData)
+                        )}
+                        compact
+                    />
+                </View>
+            );
+        }
+
+        return (
+            <>
+                {humiditySection && (
+                    <WeatherMetricSection
+                        data={humiditySection}
+                        showLastConnectionWarning={Boolean(
+                            (currentError && currentData) ||
+                            (yesterdayError && yesterdayData)
+                        )}
+                    />
+                )}
+
+                {pressureSection && (
+                    <WeatherMetricSection
+                        data={pressureSection}
+                        showLastConnectionWarning={Boolean(
+                            (currentError && currentData) ||
+                            (pressureChangeError && pressureChangeData)
+                        )}
+                    />
+                )}
+            </>
+        );
+    };
 
     return (
         <ScrollView
@@ -236,27 +288,8 @@ export default function WeatherScreen() {
                 />
             )}
 
-            {/* 7. Humidity */}
-            {humiditySection && (
-                <WeatherMetricSection
-                    data={humiditySection}
-                    showLastConnectionWarning={Boolean(
-                        (currentError && currentData) ||
-                        (yesterdayError && yesterdayData)
-                    )}
-                />
-            )}
-
-            {/* 8. Pressure */}
-            {pressureSection && (
-                <WeatherMetricSection
-                    data={pressureSection}
-                    showLastConnectionWarning={Boolean(
-                        (currentError && currentData) ||
-                        (pressureChangeError && pressureChangeData)
-                    )}
-                />
-            )}
+            {/* 7. Humidity & Pressure */}
+            {renderHumidityPressure()}
         </ScrollView>
     );
 }
