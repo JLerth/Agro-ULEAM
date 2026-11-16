@@ -1,235 +1,66 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
+import { Animated, StyleSheet } from "react-native";
 import { TopTabs } from "expo-router/js-top-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import {View} from "@/components/Themed";
-import { StyleSheet, Pressable, Animated } from "react-native";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "@/components/layout/appheader";
+import { AppTabBar, type TabBarProps, } from "@/components/layout/app-tab-bar";
+import { View } from "@/components/Themed";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
 
-type IconName = keyof typeof Ionicons.glyphMap;
+const HEADER_ITEMS = [
+    {
+        title: "Agro ULEAM",
+        subtitle: "Finca Universitaria",
+    },
+    {
+        title: "Clima",
+        subtitle: "Condiciones meteorológicas",
+    },
+    {
+        title: "Panel",
+        subtitle: "Seguimiento de la producción",
+    },
+    {
+        title: "Configuración",
+        subtitle: "Personalización de la aplicación",
+    },
+];
 
-function HeaderPositionBridge({
-    position,
-    target,
-    initialIndex,
-}: {
-    position: Animated.AnimatedInterpolation<number>;
-    target: Animated.Value;
-    initialIndex: number;
-}) {
-    React.useEffect(() => {
-        target.setValue(initialIndex);
-
-        const listenerId = position.addListener(({ value }) => {
-            target.setValue(value);
-        });
-
-        return () => {
-            position.removeListener(listenerId);
-        };
-    }, [position, target, initialIndex]);
-
-    return null;
+function createTabBar(headerPosition: Animated.Value) {
+    return (props: TabBarProps) => (
+        <AppTabBar
+            {...props}
+            headerPosition={headerPosition}
+        />
+    );
 }
 
 export default function TabLayout() {
     const theme = useColorScheme();
-    const themeColors = Colors[theme];
 
     const headerPosition = useRef(new Animated.Value(0)).current;
 
-    const headerItems = [
-        {
-            title: "Agro ULEAM",
-            subtitle: "Finca Universitaria",
-        },
-        {
-            title: "Clima",
-            subtitle: "Condiciones meteorológicas",
-        },
-        {
-            title: "Panel",
-            subtitle: "Seguimiento de la producción",
-        },
-        {
-            title: "Configuración",
-            subtitle: "Personalización de la aplicación",
-        },
-    ];
+    const tabBar = createTabBar(headerPosition);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors[theme].background, }} edges={["top"]}>
+        <SafeAreaView
+            style={[styles.root, { backgroundColor: Colors[theme].background }]}
+            edges={["top"]}
+        >
             <View colorName="background" style={styles.container}>
                 <View colorName="background" style={styles.header}>
-                    <AppHeader
-                        items={headerItems}
-                        position={headerPosition}
-                    />
+                    <AppHeader items={HEADER_ITEMS} position={headerPosition} />
                 </View>
 
                 <TopTabs
                     tabBarPosition="bottom"
+                    tabBar={tabBar}
                     screenOptions={{
                         swipeEnabled: true,
                         animationEnabled: false,
                         lazy: false,
-                    }}
-                    tabBar={({ state, descriptors, emitter, navigateToTab, position }) => {
-                        const icons: Record<string, [IconName, IconName]> = {
-                            index: ["home", "home-outline"],
-                            weather: ["cloud", "cloud-outline"],
-                            dashboard: ["leaf", "leaf-outline"],
-                            config: ["settings", "settings-outline"],
-                        };
-
-                        return (
-                            <SafeAreaView
-                                edges={["bottom"]}
-                                style={{
-                                    backgroundColor: themeColors.surface,
-                                }}
-                            >
-                                <HeaderPositionBridge
-                                    position={position}
-                                    target={headerPosition}
-                                    initialIndex={state.index}
-                                />
-        
-                                <View
-                                    style={{
-                                        height: 85,
-                                        flexDirection: "row",
-                                        paddingTop: 10,
-                                        paddingBottom: 10,
-                                        backgroundColor: themeColors.surface,
-                                        borderTopColor: themeColors.border,
-                                        borderTopWidth: 1,
-                                    }}
-                                >
-                                    {state.routes.map((route, index) => {
-                                        const focused = state.index === index;
-                                        const options = descriptors[route.key].options;
-
-                                        const [activeIcon, inactiveIcon] = icons[route.name];
-
-                                        const activeOpacity = position.interpolate({
-                                            inputRange: [index - 1, index, index + 1],
-                                            outputRange: [0, 1, 0],
-                                            extrapolate: "clamp",
-                                        });
-
-                                        const inactiveOpacity = position.interpolate({
-                                            inputRange: [index - 1, index, index + 1],
-                                            outputRange: [1, 0, 1],
-                                            extrapolate: "clamp",
-                                        });
-
-                                        const bubbleOpacity = position.interpolate({
-                                            inputRange: [
-                                                index - 0.15,
-                                                index,
-                                                index + 0.15,
-                                            ],
-                                            outputRange: [0, 1, 0],
-                                            extrapolate: "clamp",
-                                        });
-
-                                        const onPress = () => {
-                                            const event = emitter.emit({
-                                                type: "tabPress",
-                                                target: route.key,
-                                                canPreventDefault: true,
-                                            });
-
-                                            if (!focused && !event.defaultPrevented) {
-                                                navigateToTab(route.key);
-                                            }
-                                        };
-
-                                        return (
-                                            <Pressable
-                                                key={route.key}
-                                                onPress={onPress}
-                                                accessibilityRole="button"
-                                                accessibilityState={{
-                                                    selected: focused,
-                                                }}
-                                                style={{
-                                                    flex: 1,
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                }}
-                                            >
-                                                <Animated.View
-                                                    style={{
-                                                        width: 52,
-                                                        height: 32,
-                                                        borderRadius: 16,
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        position: "relative",
-                                                    }}
-                                                >
-                                                    {/* Burbuja de selección */}
-                                                    <Animated.View
-                                                        pointerEvents="none"
-                                                        style={{
-                                                            position: "absolute",
-                                                            width: 52,
-                                                            height: 32,
-                                                            borderRadius: 16,
-                                                            backgroundColor: themeColors.primary + "20",
-                                                            opacity: bubbleOpacity,
-                                                        }}
-                                                    />
-                                                    {/* Icono inactivo */}
-                                                    <Animated.View style={{ position: "absolute", opacity: inactiveOpacity }}>
-                                                        <Ionicons name={inactiveIcon} size={24} color={themeColors.tabIconDefault} />
-                                                    </Animated.View>
-                                                    {/* Icono activo */}
-                                                    <Animated.View style={{ position: "absolute", opacity: activeOpacity }}>
-                                                        <Ionicons name={activeIcon} size={24} color={themeColors.tabIconSelected} />
-                                                    </Animated.View>
-                                                </Animated.View>
-
-                                                <View
-                                                    style={{
-                                                        marginTop: 3,
-                                                        position: "relative",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        backgroundColor: "transparent",
-                                                    }}
-                                                >
-                                                    <Animated.Text
-                                                        style={{
-                                                            color: themeColors.tabIconDefault,
-                                                            fontSize: 11,
-                                                        }}
-                                                    >
-                                                        {options.title ?? route.name}
-                                                    </Animated.Text>
-
-                                                    <Animated.Text
-                                                        style={{
-                                                            position: "absolute",
-                                                            color: themeColors.tabIconSelected,
-                                                            fontSize: 11,
-                                                            opacity: activeOpacity,
-                                                        }}
-                                                    >
-                                                        {options.title ?? route.name}
-                                                    </Animated.Text>
-                                                </View>
-                                            </Pressable>
-                                        );
-                                    })}
-                                </View>
-                            </SafeAreaView>
-                        );
                     }}
                 >
                     <TopTabs.Screen
@@ -263,6 +94,9 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
     container: {
         flex: 1,
     },
