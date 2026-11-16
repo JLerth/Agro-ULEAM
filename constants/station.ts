@@ -7,4 +7,8 @@ export const STATION_CONFIG = {
         longitude: -80.3892,
     },
     timezone: "America/Guayaquil",
+    display: {
+        stationName: "Estación Meteorológica Lodana-ULEAM",
+        location: "Lodana, Manabí, Ecuador",
+    },
 } as const;

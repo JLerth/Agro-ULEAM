@@ -6,7 +6,11 @@ import { Text, View, useThemeColor } from "@/components/Themed";
 import { useWeatherData } from "@/features/weather/hooks/use-weather";
 import { useAccuWeather } from "@/features/weather/hooks/use-accuweather";
 
-import { buildQuickView } from "@/features/weather/utils/quick-view";
+import { StationLocationSection } from "@/features/weather/components/station-section";
+import { STATION_CONFIG } from "@/constants/station";
+import { DEFAULT_STATION_DISPLAY } from "@/features/weather/config/station-display";
+
+//import { buildQuickView } from "@/features/weather/utils/quick-view";
 import { buildForecast } from "@/features/weather/utils/forecast";
 import { buildWind } from "@/features/weather/utils/wind";
 import { buildRainfall } from "@/features/weather/utils/rainfall";
@@ -15,7 +19,7 @@ import { buildOutdoor } from "@/features/weather/utils/outdoor";
 import { buildHumidity } from "@/features/weather/utils/humidity";
 import { buildPressure } from "@/features/weather/utils/pressure";
 
-import { QuickViewSection } from "@/features/weather/components/quick-view-section";
+//import { QuickViewSection } from "@/features/weather/components/quick-view-section";
 import { ForecastSection } from "@/features/weather/components/forecast-section";
 import { WeatherMetricSection } from "@/features/weather/components/weather-metric-section";
 
@@ -25,7 +29,7 @@ export default function WeatherScreen() {
     // Datos de Ambient Weather
     const {
         currentData,
-        historicalData,
+        // historicalData,
         yesterdayData,
         pressureChangeData,
         currentError,
@@ -47,18 +51,18 @@ export default function WeatherScreen() {
     } = useAccuWeather();
 
     // 1. Quick View
-    const quickSections = useMemo(
-        () =>
-            currentData
-                ? buildQuickView({
-                      current: currentData,
-                      historical: historicalData,
-                      yesterday: yesterdayData,
-                      pressureChange: pressureChangeData,
-                  })
-                : null,
-        [currentData, historicalData, yesterdayData, pressureChangeData]
-    );
+    // const quickSections = useMemo(
+    //     () =>
+    //         currentData
+    //             ? buildQuickView({
+    //                   current: currentData,
+    //                   historical: historicalData,
+    //                   yesterday: yesterdayData,
+    //                   pressureChange: pressureChangeData,
+    //               })
+    //             : null,
+    //     [currentData, historicalData, yesterdayData, pressureChangeData]
+    // );
 
     // 2. Forecast
     const forecastSection = useMemo(
@@ -227,7 +231,7 @@ export default function WeatherScreen() {
             )}
 
             {/* 1. Quick View */}
-            {quickSections && (
+            {/* {quickSections && (
                 <QuickViewSection
                     data={quickSections}
                     showLastConnectionWarning={Boolean(
@@ -237,7 +241,14 @@ export default function WeatherScreen() {
                         (pressureChangeError && pressureChangeData)
                     )}
                 />
-            )}
+            )} */}
+
+            {/* 1. Ubicación */}
+            <StationLocationSection
+                stationName={STATION_CONFIG.display.stationName}
+                location={STATION_CONFIG.display.location}
+                config={DEFAULT_STATION_DISPLAY}
+            />
 
             {/* 2. Forecast */}
             <ForecastSection
