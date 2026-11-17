@@ -6,7 +6,6 @@ import { Text, View, useThemeColor } from "@/components/Themed";
 import { useWeatherData } from "@/features/weather/hooks/use-weather";
 import { useAccuWeather } from "@/features/weather/hooks/use-accuweather";
 
-import { StationLocationSection } from "@/features/weather/components/station-section";
 import { STATION_CONFIG } from "@/constants/station";
 import { DEFAULT_STATION_DISPLAY } from "@/features/weather/config/station-display";
 
@@ -22,6 +21,7 @@ import { buildPressure } from "@/features/weather/utils/pressure";
 //import { QuickViewSection } from "@/features/weather/components/quick-view-section";
 import { ForecastSection } from "@/features/weather/components/forecast-section";
 import { WeatherMetricSection } from "@/features/weather/components/weather-metric-section";
+import { StationLocationSection } from "@/features/weather/components/station-section";
 
 import { weatherStyles } from "@/features/weather/styles/weather.styles";
 
@@ -29,7 +29,7 @@ export default function WeatherScreen() {
     // Datos de Ambient Weather
     const {
         currentData,
-        // historicalData,
+        //historicalData,
         yesterdayData,
         pressureChangeData,
         currentError,
