@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Animated, StyleSheet } from "react-native";
+import { useSegments } from "expo-router";
 import { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -40,6 +41,10 @@ function createTabBar(headerPosition: Animated.Value) {
 export default function TabLayout() {
     const theme = useColorScheme();
 
+    const segments = useSegments();
+
+    const isGestionScreen = (segments as readonly string[]).includes("gestion");
+
     const headerPosition = useRef(new Animated.Value(0)).current;
 
     const tabBar = createTabBar(headerPosition);
@@ -58,13 +63,13 @@ export default function TabLayout() {
                     tabBarPosition="bottom"
                     tabBar={tabBar}
                     screenOptions={{
-                        swipeEnabled: true,
+                        swipeEnabled: !isGestionScreen,
                         animationEnabled: false,
                         lazy: false,
                     }}
                 >
                     <TopTabs.Screen
-                        name="index"
+                        name="(inicio)"
                         options={{
                             title: "Inicio",
                         }}

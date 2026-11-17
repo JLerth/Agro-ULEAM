@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Animated } from "react-native";
-import { Moon, Sun, Bell } from "lucide-react-native";
+import { Moon, Sun, Bell, ArrowLeft  } from "lucide-react-native";
+import { router, useSegments } from "expo-router";
 
 import { View, Text } from "@/components/Themed";
 import { useColorScheme, useToggleTheme } from "@/components/useColorScheme";
@@ -15,6 +16,9 @@ type AppHeaderProps = {
 };
 
 export default function AppHeader({ items, position }: AppHeaderProps) {
+    const segments = useSegments();
+    const isGestionScreen = (segments as readonly string[]).includes("gestion");
+
     const colorScheme = useColorScheme();
     const toggleTheme = useToggleTheme();
 
@@ -22,6 +26,17 @@ export default function AppHeader({ items, position }: AppHeaderProps) {
 
     return (
         <View colorName="primary" style={styles.container}>
+            {isGestionScreen && (
+                <Pressable
+                    onPress={() => router.replace("/")}
+                    accessibilityRole="button"
+                    accessibilityLabel="Volver a Inicio"
+                    hitSlop={10}
+                    style={styles.backButton}
+                >
+                    <ArrowLeft color="#FFFFFF" size={24} />
+                </Pressable>
+            )}
             <View
                 colorName="primary"
                 style={styles.titleContainer}
@@ -126,5 +141,12 @@ const styles = StyleSheet.create({
         gap: 12,
         alignItems: "center",
         justifyContent: "center",
+    },
+    backButton: {
+        width: 36,
+        height: 42,
+        justifyContent: "center",
+        alignItems: "flex-start",
+        marginRight: 8,
     },
 });

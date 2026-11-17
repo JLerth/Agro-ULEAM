@@ -13,7 +13,7 @@ type TabBarRenderer = NonNullable<ComponentProps<typeof TopTabs>["tabBar"]>;
 export type TabBarProps = Parameters<TabBarRenderer>[0];
 
 const ICONS: Record<string, [IconName, IconName] | undefined> = {
-    index: ["home", "home-outline"],
+    "(inicio)": ["home", "home-outline"],
     weather: ["cloud", "cloud-outline"],
     dashboard: ["leaf", "leaf-outline"],
     config: ["settings", "settings-outline"],
