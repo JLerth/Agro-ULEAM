@@ -19,29 +19,55 @@ export function QuickViewSection({
     data,
     showLastConnectionWarning,
 }: QuickViewSectionProps) {
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
-    const cardBackground = useThemeColor(
-        { light: "#FFFFFF", dark: "#1C2921" },
-        "background"
+    const cardBackground = useThemeColor({}, "surface");
+    const headerBackground = useThemeColor(
+        { light: "#EAF4EE", dark: "#20352A" },
+        "surface"
     );
-
     const metricBackground = useThemeColor(
-        { light: "#F8FAFC", dark: "#26372D" },
+        { light: "#F0F6F1", dark: "#20352A" },
         "surface"
     );
 
     const borderColor = useThemeColor({}, "border");
     const textColor = useThemeColor({}, "text");
-
     const secondaryTextColor = useThemeColor(
-        { light: "#64748B", dark: "#B0BDB3" },
+        { light: "#648071", dark: "#A5B7AA" },
         "text"
     );
-
     const categoryTextColor = useThemeColor(
-        { light: "#374151", dark: "#DCE7DF" },
-        "text"
+        { light: "#176B45", dark: "#3DAD75" },
+        "primary"
+    );
+
+    const renderSection = (section: QuickViewData["sections"][number]) => (
+        <View style={styles.metricSection}>
+            <Text style={[styles.categoryTitle, { color: categoryTextColor }]}>
+                {section.title}
+            </Text>
+
+            <View style={styles.metricsGrid}>
+                {section.metrics.map((metric) => (
+                    <View
+                        key={metric.id}
+                        style={[
+                            styles.metricCard,
+                            { backgroundColor: metricBackground },
+                        ]}
+                    >
+                        <Text style={[styles.metricLabel, { color: secondaryTextColor }]}>
+                            {metric.label}
+                        </Text>
+
+                        <Text style={[styles.metricValue, { color: textColor }]}>
+                            {metric.value}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+        </View>
     );
 
     return (
@@ -56,7 +82,12 @@ export function QuickViewSection({
         >
             <Pressable
                 onPress={() => setExpanded((previous) => !previous)}
-                style={styles.quickHeader}
+                accessibilityRole="button"
+                accessibilityLabel="Expandir o contraer vista rápida"
+                style={[
+                    styles.quickHeader,
+                    { backgroundColor: headerBackground },
+                ]}
             >
                 <View style={[styles.quickHeaderText, { backgroundColor: "transparent" }]}>
                     <Text style={[styles.sectionTitle, { color: textColor }]}>
@@ -81,36 +112,43 @@ export function QuickViewSection({
                         visible={showLastConnectionWarning}
                     />
 
-                    {data.sections.map((section) => (
-                        <View
-                            key={section.id}
-                            style={styles.metricSection}
-                        >
-                            <Text style={[styles.categoryTitle, { color: categoryTextColor }]}>
-                                {section.title}
-                            </Text>
+                    {(() => {
+                        const pressure = data.sections.find(
+                            (section) => section.id === "pressure"
+                        );
 
-                            <View style={styles.metricsGrid}>
-                                {section.metrics.map((metric) => (
-                                    <View
-                                        key={metric.id}
-                                        style={[
-                                            styles.metricCard,
-                                            { backgroundColor: metricBackground },
-                                        ]}
-                                    >
-                                        <Text style={[styles.metricLabel, { color: secondaryTextColor }]}>
-                                            {metric.label}
-                                        </Text>
+                        const humidity = data.sections.find(
+                            (section) => section.id === "humidity"
+                        );
 
-                                        <Text style={[styles.metricValue, { color: textColor }]}>
-                                            {metric.value}
-                                        </Text>
+                        return (
+                            <>
+                                {data.sections
+                                    .filter(
+                                        (section) =>
+                                            section.id !== "pressure" &&
+                                            section.id !== "humidity"
+                                    )
+                                    .map((section) => (
+                                        <View key={section.id}>
+                                            {renderSection(section)}
+                                        </View>
+                                    ))}
+
+                                {pressure && humidity && (
+                                    <View style={{ flexDirection: "row", gap: 8 }}>
+                                        <View style={{ flex: 1 }}>
+                                            {renderSection(pressure)}
+                                        </View>
+
+                                        <View style={{ flex: 1 }}>
+                                            {renderSection(humidity)}
+                                        </View>
                                     </View>
-                                ))}
-                            </View>
-                        </View>
-                    ))}
+                                )}
+                            </>
+                        );
+                    })()}
                 </View>
             )}
         </View>

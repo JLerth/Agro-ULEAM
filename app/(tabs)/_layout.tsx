@@ -1,134 +1,102 @@
-import { Tabs, useSegments } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import type { ColorValue } from "react-native";
-import {View} from "@/components/Themed";
-import { StyleSheet } from "react-native";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
+import { useRef } from "react";
+import { Animated, StyleSheet } from "react-native";
+import { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "@/components/layout/appheader";
+import { AppTabBar, type TabBarProps, } from "@/components/layout/app-tab-bar";
+import { View } from "@/components/Themed";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
 
-type IconName = keyof typeof Ionicons.glyphMap;
+const HEADER_ITEMS = [
+    {
+        title: "Agro ULEAM",
+        subtitle: "Finca Universitaria",
+    },
+    {
+        title: "Clima",
+        subtitle: "Condiciones meteorológicas",
+    },
+    {
+        title: "Panel",
+        subtitle: "Seguimiento de la producción",
+    },
+    {
+        title: "Configuración",
+        subtitle: "Personalización de la aplicación",
+    },
+];
 
-const tabIcon =
-    (active: IconName, inactive: IconName, primary: string) =>
-    ({
-        focused,
-        color,
-        size,
-    }: {
-        focused: boolean;
-        color: ColorValue;
-        size: number;
-    }) => (
-        <View
-            style={{
-                width: 52,
-                height: 32,
-                borderRadius: 16,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: focused
-                    ? primary + "20"
-                    : "transparent",
-            }}
-        >
-            <Ionicons
-                name={focused ? active : inactive}
-                size={size}
-                color={color as string}
-            />
-        </View>
+function createTabBar(headerPosition: Animated.Value) {
+    return (props: TabBarProps) => (
+        <AppTabBar
+            {...props}
+            headerPosition={headerPosition}
+        />
     );
+}
 
 export default function TabLayout() {
     const theme = useColorScheme();
-    const themeColors = Colors[theme];
 
-    const segments = useSegments();
-    const currentScreen = segments.at(-1);
+    const headerPosition = useRef(new Animated.Value(0)).current;
 
-    const headerTitles = {
-        index: "Agro ULEAM",
-        weather: "Clima",
-        dashboard: "Panel",
-        config: "Configuración",
-    };
-
-    const headerSubtitles = {
-        index: "Finca Universitaria",
-        weather: "Condiciones meteorológicas",
-        dashboard: "Seguimiento de la producción",
-        config: "Personalización de la aplicación",
-    };
-
-    const title =
-        headerTitles[currentScreen as keyof typeof headerTitles] ?? "Agro ULEAM";
-
-    const subtitle =
-        headerSubtitles[currentScreen as keyof typeof headerSubtitles] ?? "Finca Universitaria";
+    const tabBar = createTabBar(headerPosition);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors[theme].background, }} edges={["top"]}>
+        <SafeAreaView
+            style={[styles.root, { backgroundColor: Colors[theme].background }]}
+            edges={["top"]}
+        >
             <View colorName="background" style={styles.container}>
                 <View colorName="background" style={styles.header}>
-                    <AppHeader
-                        subtitle={subtitle}
-                        title={title}
-                    />
+                    <AppHeader items={HEADER_ITEMS} position={headerPosition} />
                 </View>
 
-                <Tabs
+                <TopTabs
+                    tabBarPosition="bottom"
+                    tabBar={tabBar}
                     screenOptions={{
-                        headerShown: false,
-                        tabBarActiveTintColor: Colors[theme].tabIconSelected,
-                        tabBarInactiveTintColor: Colors[theme].tabIconDefault,
-                        tabBarStyle: {
-                            height: 85,
-                            paddingTop: 10,
-                            paddingBottom: 10,
-                            backgroundColor: Colors[theme].surface,
-                            borderTopColor: Colors[theme].border,
-                            borderTopWidth: 1,
-                        },
+                        swipeEnabled: true,
+                        animationEnabled: false,
+                        lazy: false,
                     }}
                 >
-                    <Tabs.Screen
+                    <TopTabs.Screen
                         name="index"
                         options={{
                             title: "Inicio",
-                            tabBarIcon: tabIcon("home", "home-outline", themeColors.primary),
                         }}
                     />
-                    <Tabs.Screen
+                    <TopTabs.Screen
                         name="weather"
                         options={{
                             title: "Clima",
-                            tabBarIcon: tabIcon("cloud", "cloud-outline", themeColors.primary),
                         }}
                     />
-                    <Tabs.Screen
+                    <TopTabs.Screen
                         name="dashboard"
                         options={{
                             title: "Panel",
-                            tabBarIcon: tabIcon("leaf", "leaf-outline", themeColors.primary),
                         }}
                     />
-                    <Tabs.Screen
+                    <TopTabs.Screen
                         name="config"
                         options={{
                             title: "Ajustes",
-                            tabBarIcon: tabIcon("settings", "settings-outline", themeColors.primary),
                         }}
                     />
-                </Tabs>
+                </TopTabs>
             </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
     container: {
         flex: 1,
     },

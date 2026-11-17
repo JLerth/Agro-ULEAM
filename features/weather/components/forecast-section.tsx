@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { ComponentRef } from "react";
+import { useNavigation } from "expo-router";
 import { Pressable, ScrollView } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
@@ -25,27 +26,26 @@ export function ForecastSection({
     const hourlyScrollPosition = useRef(0);
     const [dailyContainerWidth, setDailyContainerWidth] = useState(0);
 
-    const cardBackground = useThemeColor(
-        { light: "#FFFFFF", dark: "#1C2921" },
-        "background"
-    );
-
-    const metricBackground = useThemeColor(
-        { light: "#F8FAFC", dark: "#26372D" },
-        "surface"
-    );
-
+    const cardBackground = useThemeColor({}, "surface");
     const borderColor = useThemeColor({}, "border");
     const textColor = useThemeColor({}, "text");
 
     const secondaryTextColor = useThemeColor(
-        { light: "#64748B", dark: "#B0BDB3" },
+        { light: "#648071", dark: "#A5B7AA" },
         "text"
     );
 
-    const categoryTextColor = useThemeColor(
-        { light: "#374151", dark: "#DCE7DF" },
-        "text"
+    const categoryTextColor = useThemeColor({}, "primary");
+    const accentColor = useThemeColor({}, "primary");
+
+    const softBackground = useThemeColor(
+        { light: "#F0F6F1", dark: "#20352A" },
+        "surface"
+    );
+
+    const todayBackground = useThemeColor(
+        { light: "#EAF4EE", dark: "#294936" },
+        "surface"
     );
 
     const scrollHourly = (direction: "left" | "right") => {
@@ -60,6 +60,16 @@ export function ForecastSection({
             x: nextPosition,
             animated: true,
         });
+    };
+
+    const navigation = useNavigation();
+
+    const handleHourlyTouchStart = () => {
+        navigation.setOptions({ swipeEnabled: false });
+    };
+
+    const handleHourlyTouchEnd = () => {
+        navigation.setOptions({ swipeEnabled: true });
     };
 
     return (
@@ -98,16 +108,22 @@ export function ForecastSection({
                     <View style={styles.scrollHint}>
                         <Pressable
                             onPress={() => scrollHourly("left")}
-                            style={styles.scrollButton}
                             accessibilityLabel="Retroceder pronóstico"
+                            style={[
+                                styles.scrollButton,
+                                { backgroundColor: softBackground },
+                            ]}
                         >
                             <ChevronLeft size={18} color={secondaryTextColor} />
                         </Pressable>
 
                         <Pressable
                             onPress={() => scrollHourly("right")}
-                            style={styles.scrollButton}
                             accessibilityLabel="Avanzar pronóstico"
+                            style={[
+                                styles.scrollButton,
+                                { backgroundColor: softBackground },
+                            ]}
                         >
                             <ChevronRight size={18} color={secondaryTextColor} />
                         </Pressable>
@@ -120,6 +136,9 @@ export function ForecastSection({
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.hourlyList}
                     scrollEventThrottle={16}
+                    onTouchStart={handleHourlyTouchStart}
+                    onTouchEnd={handleHourlyTouchEnd}
+                    onTouchCancel={handleHourlyTouchEnd}
                     onScroll={(event) => {
                         hourlyScrollPosition.current =
                             event.nativeEvent.contentOffset.x;
@@ -130,7 +149,14 @@ export function ForecastSection({
                             key={hour.id}
                             style={[
                                 styles.hourlyCard,
-                                { backgroundColor: metricBackground },
+                                    {
+                                        backgroundColor: hour.isCurrentHour
+                                            ? todayBackground
+                                            : softBackground,
+                                        borderColor: hour.isCurrentHour
+                                            ? accentColor
+                                            : borderColor,
+                                    },
                                 hour.isCurrentHour && styles.dailyCardToday,
                             ]}
                         >
@@ -138,7 +164,9 @@ export function ForecastSection({
                                 <Text
                                     style={[
                                         styles.forecastValue,
-                                        hour.isCurrentHour && styles.dailyTodayText,
+                                        {
+                                            color: hour.isCurrentHour ? accentColor : textColor,
+                                        },
                                     ]}
                                 >
                                     {hour.metrics.find(
@@ -155,7 +183,7 @@ export function ForecastSection({
                             </View>
 
                             <View style={styles.forecastMetric}>
-                                <Text style={styles.forecastValue}>
+                                <Text style={[styles.forecastValue, { color: textColor }]}>
                                     {hour.metrics.find(
                                         (metric) => metric.id === "temperature"
                                     )?.value}
@@ -183,6 +211,9 @@ export function ForecastSection({
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    onTouchStart={handleHourlyTouchStart}
+                    onTouchEnd={handleHourlyTouchEnd}
+                    onTouchCancel={handleHourlyTouchEnd}
                     contentContainerStyle={[
                         styles.dailyList,
                         { minWidth: dailyContainerWidth },
@@ -193,7 +224,14 @@ export function ForecastSection({
                             key={day.id}
                             style={[
                                 styles.dailyCard,
-                                { backgroundColor: metricBackground },
+                                    {
+                                        backgroundColor: day.isToday
+                                            ? todayBackground
+                                            : cardBackground,
+                                        borderColor: day.isToday
+                                            ? accentColor
+                                            : borderColor,
+                                    },
                                 day.isToday && styles.dailyCardToday,
                             ]}
                         >
@@ -201,7 +239,9 @@ export function ForecastSection({
                             <Text
                                 style={[
                                     styles.forecastValue,
-                                    day.isToday && styles.dailyTodayText,
+                                    {
+                                        color: day.isToday ? accentColor : textColor,
+                                    },
                                 ]}
                             >
                                 {day.metrics.find(
@@ -216,13 +256,13 @@ export function ForecastSection({
                             />
 
                             {/* Temperaturas */}
-                            <Text style={styles.dailyTemperature}>
+                            <Text style={[styles.dailyTemperature, { color: textColor }]}>
                                 {day.metrics.find(
                                     (metric) => metric.id === "maximum"
                                 )?.value}
                             </Text>
 
-                            <Text style={styles.dailyMinimum}>
+                            <Text style={[styles.dailyMinimum, { color: secondaryTextColor }]}>
                                 {day.metrics.find(
                                     (metric) => metric.id === "minimum"
                                 )?.value}
@@ -230,13 +270,13 @@ export function ForecastSection({
 
                             {/* Precipitación diurna y nocturna */}
                             <View style={styles.dailyPrecipitation}>
-                                <Text style={styles.precipitationValue}>
+                                <Text style={[styles.precipitationValue, { color: secondaryTextColor }]}>
                                     ☀ {day.metrics.find(
                                         (metric) => metric.id === "day-precipitation"
                                     )?.value}
                                 </Text>
 
-                                <Text style={styles.precipitationValue}>
+                                <Text style={[styles.precipitationValue, { color: secondaryTextColor }]}>
                                     ☾ {day.metrics.find(
                                         (metric) => metric.id === "night-precipitation"
                                     )?.value}

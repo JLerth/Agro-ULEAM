@@ -1,4 +1,3 @@
-
 import { Text, View, useThemeColor } from "@/components/Themed";
 import { weatherStyles as styles } from "@/features/weather/styles/weather.styles";
 import { LastConnectionWarning } from "@/features/weather/components/last-connection-warning";
@@ -15,20 +14,19 @@ interface WeatherMetricSectionProps {
         readonly metrics: readonly WeatherMetric[];
     };
     readonly showLastConnectionWarning: boolean;
+    readonly compact?: boolean;
 }
 
 export function WeatherMetricSection({
     data,
     showLastConnectionWarning,
+    compact = false,
 }: WeatherMetricSectionProps) {
     // Colores del tema
-    const cardBackground = useThemeColor(
-        { light: "#FFFFFF", dark: "#1C2921" },
-        "background"
-    );
+    const cardBackground = useThemeColor({}, "surface");
 
     const metricBackground = useThemeColor(
-        { light: "#F8FAFC", dark: "#26372D" },
+        { light: "#F0F6F1", dark: "#20352A" },
         "surface"
     );
 
@@ -36,14 +34,15 @@ export function WeatherMetricSection({
     const textColor = useThemeColor({}, "text");
 
     const secondaryTextColor = useThemeColor(
-        { light: "#64748B", dark: "#B0BDB3" },
+        { light: "#648071", dark: "#A5B7AA" },
         "text"
     );
 
     return (
         <View
             style={[
-                styles.forecastSection,
+                styles.weatherMetricSection,
+                compact && styles.weatherMetricSectionCompact,
                 {
                     backgroundColor: cardBackground,
                     borderColor,
@@ -88,7 +87,7 @@ export function WeatherMetricSection({
             >
                 <View
                     style={[
-                        styles.metricsGrid,
+                        compact ? styles.metricsGridCompact : styles.metricsGrid,
                         { backgroundColor: "transparent" },
                     ]}
                 >
@@ -96,8 +95,8 @@ export function WeatherMetricSection({
                         <View
                             key={metric.id}
                             style={[
-                                styles.metricCard,
-                                { backgroundColor: metricBackground },
+                                compact ? styles.metricCardCompact : styles.metricCard,
+                                { backgroundColor: metricBackground, borderColor },
                             ]}
                         >
                             <Text

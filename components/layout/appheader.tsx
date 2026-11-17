@@ -1,15 +1,20 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Animated } from "react-native";
 import { Moon, Sun, Bell } from "lucide-react-native";
 
 import { View, Text } from "@/components/Themed";
 import { useColorScheme, useToggleTheme } from "@/components/useColorScheme";
 
-type AppHeaderProps = {
+type HeaderItem = {
     readonly subtitle: string;
     readonly title: string;
 };
 
-export default function AppHeader({ subtitle, title }: AppHeaderProps) {
+type AppHeaderProps = {
+    readonly items: HeaderItem[];
+    readonly position: Animated.Value;
+};
+
+export default function AppHeader({ items, position }: AppHeaderProps) {
     const colorScheme = useColorScheme();
     const toggleTheme = useToggleTheme();
 
@@ -18,30 +23,47 @@ export default function AppHeader({ subtitle, title }: AppHeaderProps) {
     return (
         <View colorName="primary" style={styles.container}>
             <View
-                lightColor="#246B4A"
-                darkColor="#246B4A"
+                colorName="primary"
                 style={styles.titleContainer}
             >
-                <Text
-                    lightColor="#FFFFFF"
-                    darkColor="#FFFFFF"
-                    style={styles.subtitle}
-                >
-                    {subtitle}
-                </Text>
+                {items.map((item, index) => {
+                    const opacity = position.interpolate({
+                        inputRange: [index - 1, index, index + 1],
+                        outputRange: [0, 1, 0],
+                        extrapolate: "clamp",
+                    });
 
-                <Text
-                    lightColor="#FFFFFF"
-                    darkColor="#FFFFFF"
-                    style={styles.title}
-                >
-                    {title}
-                </Text>
+                    return (
+                        <Animated.View
+                            key={item.title}
+                            pointerEvents="none"
+                            style={[
+                                styles.animatedTitle,
+                                { opacity },
+                            ]}
+                        >
+                            <Text
+                                lightColor="#FFFFFF"
+                                darkColor="#FFFFFF"
+                                style={styles.subtitle}
+                            >
+                                {item.subtitle}
+                            </Text>
+
+                            <Text
+                                lightColor="#FFFFFF"
+                                darkColor="#FFFFFF"
+                                style={styles.title}
+                            >
+                                {item.title}
+                            </Text>
+                        </Animated.View>
+                    );
+                })}
             </View>
 
             <View
-                lightColor="#246B4A"
-                darkColor="#246B4A"
+                colorName="primary"
                 style={styles.themeButton}
             >
                 <Bell color="#FFFFFF" size={26} />
@@ -77,7 +99,16 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     titleContainer: {
-        flexDirection: "column",
+        flex: 1,
+        height: 46,
+        position: "relative",
+        justifyContent: "center",
+    },
+    animatedTitle: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
     },
     subtitle: {
         fontSize: 13,
