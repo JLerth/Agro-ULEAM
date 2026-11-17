@@ -45,10 +45,17 @@ export interface ForecastMetric {
     value: string;
 }
 
-export interface HourlyForecast {
+// export interface HourlyForecast {
+//     id: string;
+//     isCurrentHour: boolean;
+//     weatherIcon: number;
+//     metrics: ForecastMetric[];
+// }
+
+export interface TodayForecast {
     id: string;
-    isCurrentHour: boolean;
     weatherIcon: number;
+    description: string;
     metrics: ForecastMetric[];
 }
 
@@ -62,7 +69,8 @@ export interface DailyForecast {
 export interface ForecastSection {
     id: "forecast";
     title: string;
-    hourly: HourlyForecast[];
+    //hourly: HourlyForecast[];
+    today: TodayForecast | null;
     daily: DailyForecast[];
 }
 
@@ -84,36 +92,36 @@ function formatValue(
 /**
  * Convierte una fecha en hora local de Ecuador.
  */
-function formatTime(value: string): string {
-    const date = new Date(value);
+// function formatTime(value: string): string {
+//     const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) {
-        return NO_VALUE;
-    }
+//     if (Number.isNaN(date.getTime())) {
+//         return NO_VALUE;
+//     }
 
-    return new Intl.DateTimeFormat("es-EC", {
-        timeZone: "America/Guayaquil",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-    }).format(date);
-}
+//     return new Intl.DateTimeFormat("es-EC", {
+//         timeZone: "America/Guayaquil",
+//         hour: "2-digit",
+//         minute: "2-digit",
+//         hour12: true,
+//     }).format(date);
+// }
 /**
  * Comprueba si el pronóstico corresponde a la hora que está transcurriendo.
  */
-function isCurrentHour(value: string): boolean {
-    const forecastDate = new Date(value);
+// function isCurrentHour(value: string): boolean {
+//     const forecastDate = new Date(value);
 
-    if (Number.isNaN(forecastDate.getTime())) {
-        return false;
-    }
+//     if (Number.isNaN(forecastDate.getTime())) {
+//         return false;
+//     }
 
-    const now = Date.now();
-    const forecastStart = forecastDate.getTime();
-    const forecastEnd = forecastStart + 60 * 60 * 1000;
+//     const now = Date.now();
+//     const forecastStart = forecastDate.getTime();
+//     const forecastEnd = forecastStart + 60 * 60 * 1000;
 
-    return now >= forecastStart && now < forecastEnd;
-}
+//     return now >= forecastStart && now < forecastEnd;
+// }
 /**
  * Convierte una fecha en la inicial del día de la semana.
  */
@@ -162,44 +170,55 @@ export function buildForecast({
     hourlyData,
     dailyData,
 }: ForecastInput): ForecastSection {
-    const hourlyForecast = hourlyData.slice(0, 12);
-    const today = new Date();
-        today.setHours(0, 0, 0, 0);
+    const currentHour = hourlyData[0] ?? null;
+    const currentDay = dailyData?.DailyForecasts[0] ?? null;
+
+    const today: TodayForecast | null = currentHour
+    ? {
+            id: currentHour.DateTime,
+            weatherIcon: currentHour.WeatherIcon,
+            description: currentHour.IconPhrase,
+            metrics: [
+                metric(
+                    "temperature",
+                    `${formatValue(currentHour.Temperature.Value)} °C`
+                ),
+                metric(
+                    "maximum",
+                    `${formatValue(currentDay?.Temperature.Maximum.Value ?? null)} °C`
+                ),
+                metric(
+                    "minimum",
+                    `${formatValue(currentDay?.Temperature.Minimum.Value ?? null)} °C`
+                ),
+                metric(
+                    "day-precipitation",
+                    `${formatValue(currentDay?.Day.PrecipitationProbability ?? null)}%`
+                ),
+                metric(
+                    "night-precipitation",
+                    `${formatValue(currentDay?.Night.PrecipitationProbability ?? null)}%`
+                ),
+            ],
+        }
+    : null;
+
+    const todayDate = new Date();
+        todayDate.setHours(0, 0, 0, 0);
 
         const dailyForecast = (dailyData?.DailyForecasts ?? [])
             .filter((day) => {
                 const forecastDate = new Date(day.Date);
                 forecastDate.setHours(0, 0, 0, 0);
 
-                return forecastDate >= today;
+                return forecastDate > todayDate;
             })
             .slice(0, 7);
+
     return {
         id: "forecast",
         title: "Pronostico",
-
-        hourly: hourlyForecast.map((hour) => {
-            const currentHour = isCurrentHour(hour.DateTime);
-
-            return {
-                id: hour.DateTime,
-                isCurrentHour: currentHour,
-                weatherIcon: hour.WeatherIcon,
-                metrics: [
-                    metric(
-                        "time",
-                        currentHour
-                            ? "Ahora"
-                            : formatTime(hour.DateTime)
-                    ),
-                    metric(
-                        "temperature",
-                        `${formatValue(hour.Temperature.Value)} °C`
-                    ),
-                ],
-            };
-        }),
-
+        today,
         daily: dailyForecast.map((day) => ({
             id: day.Date,
             isToday: new Date(day.Date).toDateString() === new Date().toDateString(),

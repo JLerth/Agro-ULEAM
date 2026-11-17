@@ -94,11 +94,11 @@ export function buildRainfall(
                 "Anual",
                 `${formatValue(rainfall.yearly)} mm`
             ),
-            metric(
-                "total",
-                "Total",
-                `${formatValue(rainfall.total)} mm`
-            ),
+            // metric(
+            //     "total",
+            //     "Total",
+            //     `${formatValue(rainfall.total)} mm`
+            // ),
             // metric(
             //     "last-rain",
             //     "Última Lluvia",

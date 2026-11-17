@@ -55,8 +55,8 @@ function getWindDirection(degrees: number | null): string {
     const directions = [
         "N", "NNE", "NE", "ENE",
         "E", "ESE", "SE", "SSE",
-        "S", "SSW", "SW", "WSW",
-        "W", "WNW", "NW", "NNW",
+        "S", "SSO", "SO", "OSO",
+        "O", "ONO", "NO", "NNO",
     ];
 
     return directions[Math.round(degrees / 22.5) % 16];
@@ -82,11 +82,11 @@ export function buildWind(wind: WindInput): WindSection {
         id: "wind",
         title: "Viento",
         metrics: [
-            metric(
-                "average-direction",
-                "Cada 10 Minutos",
-                getWindDirection(wind.averageDirection)
-            ),
+            // metric(
+            //     "average-direction",
+            //     "Cada 10 Minutos",
+            //     getWindDirection(wind.averageDirection)
+            // ),
             metric(
                 "speed",
                 "Velocidad",
