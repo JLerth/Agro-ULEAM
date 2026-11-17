@@ -86,87 +86,114 @@ export const weatherStyles = StyleSheet.create({
     },
     forecastGroup: {
         gap: 12,
-    },
-    hourlyList: {
-        gap: 10,
-        paddingRight: 16,
-    },
-    hourlyCard: {
-        width: 125,
-        borderRadius: 14,
-        borderWidth: 1,
-        padding: 12,
-        gap: 12,
-    },
-    dailyList: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        gap: 6,
-        paddingVertical: 12,
-    },
-    dailyCard: {
-        flex: 1,
-        minWidth: 0,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10,
-        paddingVertical: 14,
-        borderRadius: 14,
-        borderWidth: 1,
-    },
-    dailyTemperature: {
-        fontSize: 14,
-        fontWeight: "700",
-    },
-    dailyMinimum: {
-        fontSize: 12,
-    },
-    forecastMetric: {
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
         backgroundColor: "transparent",
     },
     forecastValue: {
         fontSize: 14,
         fontWeight: "600",
     },
-    forecastTitleRow: {
+    todayForecastCard: {
+        borderRadius: 16,
+        borderWidth: 1,
+        padding: 16,
+        gap: 16,
+    },
+    todayForecastMain: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        gap: 16,
+        backgroundColor: "transparent",
     },
-    scrollHint: {
+    todayForecastDescription: {
+        flex: 1,
+        gap: 5,
+        backgroundColor: "transparent",
+    },
+    todayForecastTemperature: {
+        fontSize: 32,
+        fontWeight: "700",
+    },
+    todayForecastCondition: {
+        fontSize: 14,
+        textTransform: "capitalize",
+    },
+    todayForecastTemperatures: {
         flexDirection: "row",
+        justifyContent: "space-around",
+        borderTopWidth: 1,
+        paddingTop: 14,
+        gap: 4,
+        backgroundColor: "transparent",
+    },
+    todayForecastMetric: {
+        flex: 1,
         alignItems: "center",
         gap: 6,
         backgroundColor: "transparent",
     },
-    scrollButton: {
-        width: 32,
-        height: 32,
-        borderRadius: 10,
+    todayForecastMetricIcon: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
+        backgroundColor: "transparent",
+    },
+    dailyForecastList: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "stretch",
+        gap: 10,
+        paddingVertical: 4,
+    },
+
+    dailyForecastCard: {
+        flex: 1,
+        minWidth: 0,
+        borderRadius: 14,
+        borderWidth: 1,
+        padding: 12,
+        alignItems: "center",
+        gap: 12,
+    },
+    dailyForecastHeader: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "transparent",
+    },
+    dailyForecastWeekday: {
+        fontSize: 14,
+        fontWeight: "700",
+    },
+    dailyForecastDate: {
+        fontSize: 13,
+    },
+    dailyForecastTemperatures: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        backgroundColor: "transparent",
+    },
+    dailyForecastMaximum: {
+        fontSize: 16,
+        fontWeight: "700",
+    },
+    dailyForecastMinimum: {
+        fontSize: 14,
+    },
+    dailyForecastPrecipitation: {
+        width: "100%",
+        gap: 7,
+        borderTopWidth: 1,
+        paddingTop: 8,
+        backgroundColor: "transparent",
+    },
+    dailyForecastPrecipitationItem: {
+        flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-    },
-    dailyPrecipitation: {
-        alignItems: "center",
-        gap: 5,
+        gap: 4,
         backgroundColor: "transparent",
-        width: "100%",
-    },
-    precipitationLabel: {
-        fontSize: 10,
-    },
-    precipitationValue: {
-        fontSize: 11,
-        fontWeight: "600",
-    },
-    dailyCardToday: {
-        borderWidth: 1.5,
-    },
-    dailyTodayText: {
-        fontWeight: "800",
     },
 /* -------------------------------------------------------------------------- */
 /* Weather metrics                                                            */

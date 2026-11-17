@@ -1,5 +1,5 @@
 import { useMemo} from "react";
-import { Button, ScrollView} from "react-native";
+import { ScrollView} from "react-native";
 
 import { Text, View, useThemeColor } from "@/components/Themed";
 
@@ -222,14 +222,6 @@ export default function WeatherScreen() {
                 <Text>Cargando...</Text>
             )}
 
-            {/* Errores globales de Ambient Weather y AccuWeather */}
-            {hasErrors && (
-                <Button
-                    title="Reintentar datos"
-                    onPress={retryAllFailed}
-                />
-            )}
-
             {/* 1. Quick View */}
             {/* {quickSections && (
                 <QuickViewSection
@@ -248,6 +240,8 @@ export default function WeatherScreen() {
                 stationName={STATION_CONFIG.display.stationName}
                 location={STATION_CONFIG.display.location}
                 config={DEFAULT_STATION_DISPLAY}
+                showRetry={hasErrors}
+                onRetry={retryAllFailed}
             />
 
             {/* 2. Forecast */}
