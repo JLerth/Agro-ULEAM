@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { useSegments } from "expo-router";
 import { TopTabs } from "expo-router/js-top-tabs";
@@ -29,6 +29,25 @@ const HEADER_ITEMS = [
     },
 ];
 
+const GESTION_HEADERS: Record<string, { title: string; subtitle: string }> = {
+    agro: {
+        title: "Agrícola",
+        subtitle: "Gestión agrícola",
+    },
+    pecu: {
+        title: "Pecuaria",
+        subtitle: "Gestión pecuaria",
+    },
+    vive: {
+        title: "Viveros",
+        subtitle: "Gestión viveros",
+    },
+    insu: {
+        title: "Insumos",
+        subtitle: "Gestión insumos",
+    },
+};
+
 function createTabBar(headerPosition: Animated.Value) {
     return (props: TabBarProps) => (
         <AppTabBar
@@ -45,6 +64,38 @@ export default function TabLayout() {
 
     const isGestionScreen = (segments as readonly string[]).includes("gestion");
 
+    const currentSegment = (segments as readonly string[]).at(-1);
+
+    const gestionHeader = GESTION_HEADERS[currentSegment ?? ""];
+
+    const [lastGestionHeader, setLastGestionHeader] = useState<
+        { title: string; subtitle: string } | null
+    >(null);
+
+    const isInicioRoot =
+    (segments as readonly string[]).includes("(inicio)") &&
+    !isGestionScreen;
+
+    useEffect(() => {
+        if (gestionHeader) {
+            setLastGestionHeader(gestionHeader);
+        } else if (isInicioRoot) {
+            setLastGestionHeader(null);
+        }
+    }, [gestionHeader, isInicioRoot]);
+
+    const headerItems = HEADER_ITEMS.map((item, index) => {
+        if (index !== 0) return item;
+
+        if (gestionHeader) return gestionHeader;
+
+        if (!isInicioRoot && lastGestionHeader) {
+            return lastGestionHeader;
+        }
+
+        return item;
+    });
+
     const headerPosition = useRef(new Animated.Value(0)).current;
 
     const tabBar = createTabBar(headerPosition);
@@ -56,7 +107,7 @@ export default function TabLayout() {
         >
             <View colorName="background" style={styles.container}>
                 <View colorName="background" style={styles.header}>
-                    <AppHeader items={HEADER_ITEMS} position={headerPosition} />
+                    <AppHeader items={headerItems} position={headerPosition} />
                 </View>
 
                 <TopTabs

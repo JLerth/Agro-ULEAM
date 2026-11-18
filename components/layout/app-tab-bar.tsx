@@ -1,4 +1,5 @@
 import { useEffect, type ComponentProps } from "react";
+import { router, useSegments } from "expo-router";
 import { Animated, StyleSheet } from "react-native";
 import type { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -35,6 +36,9 @@ export function AppTabBar({
 }: AppTabBarProps) {
     const theme = useColorScheme();
     const themeColors = Colors[theme];
+
+    const segments = useSegments();
+    const isGestionScreen = (segments as readonly string[]).includes("gestion");
 
     useEffect(() => {
         headerPosition.setValue(state.index);
@@ -76,7 +80,14 @@ export function AppTabBar({
                             canPreventDefault: true,
                         });
 
-                        if (!focused && !event.defaultPrevented) {
+                        if (event.defaultPrevented) return;
+
+                        if (route.name === "(inicio)" && focused && isGestionScreen) {
+                            router.replace("/(tabs)/(inicio)");
+                            return;
+                        }
+
+                        if (!focused) {
                             navigateToTab(route.key);
                         }
                     };
