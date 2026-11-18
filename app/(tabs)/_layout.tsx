@@ -42,9 +42,9 @@ const GESTION_HEADERS: Record<string, { title: string; subtitle: string }> = {
         title: "Viveros",
         subtitle: "Gestión viveros",
     },
-    insu: {
-        title: "Insumos",
-        subtitle: "Gestión insumos",
+    inve: {
+        title: "Inventario",
+        subtitle: "Gestión inventario",
     },
 };
 
