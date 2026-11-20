@@ -38,7 +38,9 @@ export function AppTabBar({
     const themeColors = Colors[theme];
 
     const segments = useSegments();
-    const isGestionScreen = (segments as readonly string[]).includes("gestion");
+    const isGestionScreen =
+        (segments as readonly string[]).includes("gestion") ||
+        (segments as readonly string[]).includes("detalle");
 
     useEffect(() => {
         headerPosition.setValue(state.index);

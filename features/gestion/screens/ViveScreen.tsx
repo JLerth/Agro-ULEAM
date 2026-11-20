@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { Sprout } from "lucide-react-native";
 
@@ -32,9 +33,9 @@ export default function ViverosScreen() {
                     title={lot.title}
                     subtitle={lot.subtitle}
                     icon={<Sprout size={22} />}
-                    onPress={() => {
-                        console.log("Ingresar al lote:", lot.id);
-                    }}
+                    onPress={() => 
+                        router.push("/(tabs)/(inicio)/detalle/vive")
+                    }
                 />
             ))}
         </GestionLayout>

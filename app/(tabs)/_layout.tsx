@@ -47,6 +47,24 @@ const GESTION_HEADERS: Record<string, { title: string; subtitle: string }> = {
         subtitle: "Gestión inventario",
     },
 };
+const DETAIL_HEADERS: Record<string, { title: string; subtitle: string }> = {
+    agro: {
+        title: "Detalles",
+        subtitle: "Agrícola",
+    },
+    pecu: {
+        title: "Detalles",
+        subtitle: "Pecuaria"
+    },
+    vive: {
+        title: "Detalles",
+        subtitle: "Viveros",
+    },
+    insu: {
+        title: "Detalles",
+        subtitle: "Inventario",
+    },
+};
 
 function createTabBar(headerPosition: Animated.Value) {
     return (props: TabBarProps) => (
@@ -62,11 +80,17 @@ export default function TabLayout() {
 
     const segments = useSegments();
 
-    const isGestionScreen = (segments as readonly string[]).includes("gestion");
+    const isGestionScreen =
+        (segments as readonly string[]).includes("gestion") ||
+        (segments as readonly string[]).includes("detalle");
 
     const currentSegment = (segments as readonly string[]).at(-1);
 
-    const gestionHeader = GESTION_HEADERS[currentSegment ?? ""];
+   const isDetailScreen = (segments as readonly string[]).includes("detalle");
+
+    const gestionHeader = isDetailScreen
+        ? DETAIL_HEADERS[currentSegment ?? ""]
+        : GESTION_HEADERS[currentSegment ?? ""];
 
     const [lastGestionHeader, setLastGestionHeader] = useState<
         { title: string; subtitle: string } | null
