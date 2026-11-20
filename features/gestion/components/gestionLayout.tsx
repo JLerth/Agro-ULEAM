@@ -1,4 +1,3 @@
-
 import { Pressable, ScrollView } from "react-native";
 import { router } from "expo-router";
 import { Text, View } from "@/components/Themed";
@@ -15,11 +14,13 @@ type GestionLayoutProps = {
         readonly value: string;
         readonly label: string;
     };
+    readonly children: React.ReactNode;
 };
 
 export default function GestionLayout({
     firstStat,
     secondStat,
+    children,
 }: GestionLayoutProps) {
     return (
         <View style={gestionStyles.container}>
@@ -77,7 +78,7 @@ export default function GestionLayout({
                     style={gestionStyles.scrollArea}
                     contentContainerStyle={gestionStyles.scrollContent}
                 >
-                    {/* Contenido específico de cada pantalla */}
+                    {children}
                 </ScrollView>
 
                 {/* Añadir */}

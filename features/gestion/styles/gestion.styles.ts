@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const gestionStyles = StyleSheet.create({
+/* -------------------------------------------------------------------------- */
+/* Encabezado                                                                 */
+/* -------------------------------------------------------------------------- */
     container: {
         flex: 1,
     },
@@ -38,6 +41,9 @@ export const gestionStyles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
     },
+/* -------------------------------------------------------------------------- */
+/* Filtros                                                                    */
+/* -------------------------------------------------------------------------- */
     filterBar: {
         flexDirection: "row",
         alignItems: "center",
@@ -63,8 +69,30 @@ export const gestionStyles = StyleSheet.create({
         flexGrow: 1,
     },
     addButton: {
-        alignSelf: "flex-end",
+        position: "absolute",
+        right: 16,
+        bottom: 16,
+        zIndex: 1,
+    },
+/* -------------------------------------------------------------------------- */
+/* Tarjeta                                                                    */
+/* -------------------------------------------------------------------------- */
+    cardContainer: {
         padding: 12,
-        margin: 16,
+        gap: 12,
+    },
+    cardHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    cardContent: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+    cardInfo: {
+        flex: 1,
+        gap: 4,
     },
 });
