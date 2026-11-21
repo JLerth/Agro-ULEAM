@@ -1,11 +1,13 @@
-import { Text } from "@/components/Themed";
-
 import GestionDetail from "../components/gestionDetail";
+import ViveDetail from "../components/detail/viveDetail";
 
 export default function ViveDetailScreen() {
     return (
         <GestionDetail  backRoute="/(tabs)/(inicio)/gestion/vive">
-            <Text>Detalle vivero</Text>
+            <ViveDetail
+                id="ID pendiente"
+                name="Nombre del lote"
+            />
         </GestionDetail>
     );
 }
