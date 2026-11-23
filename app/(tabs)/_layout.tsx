@@ -5,66 +5,16 @@ import { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "@/components/layout/appheader";
+import {
+    HEADER_ITEMS,
+    GESTION_HEADERS,
+    DETAIL_HEADERS,
+    type ScreenHeader,
+} from "@/components/layout/screenheaders";
 import { AppTabBar, type TabBarProps, } from "@/components/layout/app-tab-bar";
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-
-const HEADER_ITEMS = [
-    {
-        title: "Agro ULEAM",
-        subtitle: "Finca Universitaria",
-    },
-    {
-        title: "Clima",
-        subtitle: "Condiciones meteorológicas",
-    },
-    {
-        title: "Panel",
-        subtitle: "Seguimiento de la producción",
-    },
-    {
-        title: "Configuración",
-        subtitle: "Personalización de la aplicación",
-    },
-];
-
-const GESTION_HEADERS: Record<string, { title: string; subtitle: string }> = {
-    agro: {
-        title: "Agrícola",
-        subtitle: "Gestión agrícola",
-    },
-    pecu: {
-        title: "Pecuaria",
-        subtitle: "Gestión pecuaria",
-    },
-    vive: {
-        title: "Viveros",
-        subtitle: "Gestión viveros",
-    },
-    inve: {
-        title: "Inventario",
-        subtitle: "Gestión inventario",
-    },
-};
-const DETAIL_HEADERS: Record<string, { title: string; subtitle: string }> = {
-    agro: {
-        title: "Detalles",
-        subtitle: "Agrícola",
-    },
-    pecu: {
-        title: "Detalles",
-        subtitle: "Pecuaria"
-    },
-    vive: {
-        title: "Detalles",
-        subtitle: "Viveros",
-    },
-    insu: {
-        title: "Detalles",
-        subtitle: "Inventario",
-    },
-};
 
 function createTabBar(headerPosition: Animated.Value) {
     return (props: TabBarProps) => (
@@ -92,9 +42,8 @@ export default function TabLayout() {
         ? DETAIL_HEADERS[currentSegment ?? ""]
         : GESTION_HEADERS[currentSegment ?? ""];
 
-    const [lastGestionHeader, setLastGestionHeader] = useState<
-        { title: string; subtitle: string } | null
-    >(null);
+    const [lastGestionHeader, setLastGestionHeader] =
+        useState<ScreenHeader | null>(null);
 
     const isInicioRoot =
     (segments as readonly string[]).includes("(inicio)") &&
@@ -130,13 +79,15 @@ export default function TabLayout() {
             edges={["top"]}
         >
             <View colorName="background" style={styles.container}>
-                <View colorName="background" style={styles.header}>
-                    <AppHeader items={headerItems} position={headerPosition} />
-                </View>
+                {!isDetailScreen && (
+                    <View colorName="background" style={styles.header}>
+                        <AppHeader items={headerItems} position={headerPosition} />
+                    </View>
+                )}
 
                 <TopTabs
                     tabBarPosition="bottom"
-                    tabBar={tabBar}
+                    tabBar={isDetailScreen ? () => null : tabBar}
                     screenOptions={{
                         swipeEnabled: !isGestionScreen,
                         animationEnabled: false,

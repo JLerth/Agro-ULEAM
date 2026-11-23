@@ -23,9 +23,17 @@ export const detailStyles = StyleSheet.create({
         height: StyleSheet.hairlineWidth,
         backgroundColor: "#999",
     },
-    // contentSection: {
-    //     flex: 1,
-    // },
+    titleSection: {
+        gap: 2,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    subtitle: {
+        fontSize: 14,
+        color: "#888",
+    },
 /* -------------------------------------------------------------------------- */
 /* Viveros                                                                    */
 /* -------------------------------------------------------------------------- */
