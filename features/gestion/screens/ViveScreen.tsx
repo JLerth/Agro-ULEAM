@@ -1,19 +1,14 @@
 import { router } from "expo-router";
-import { useState } from "react";
 import { Sprout } from "lucide-react-native";
 
 import GestionLayout from "../components/gestionLayout";
 import GestionCard from "../components/gestionCard";
 
+import { useViveros } from "../hooks/use-viveros";
+import { VIVE_LOT_STATUS } from "../data/viveLots";
+
 export default function ViverosScreen() {
-    const [lots] = useState([
-        {
-            id: "LOT-001",
-            status: "Activo",
-            title: "Café",
-            subtitle: "Lote de producción",
-        },
-    ]);
+    const lots = useViveros();
     return (
         <GestionLayout
             firstStat={{
@@ -29,12 +24,17 @@ export default function ViverosScreen() {
                 <GestionCard
                     key={lot.id}
                     id={lot.id}
-                    status={lot.status}
+                    status={VIVE_LOT_STATUS[lot.status]}
                     title={lot.title}
                     subtitle={lot.subtitle}
                     icon={<Sprout size={22} />}
-                    onPress={() => 
-                        router.push("/(tabs)/(inicio)/detalle/vive")
+                    onPress={() =>
+                        router.push({
+                            pathname: "/(tabs)/(inicio)/detalle/vive",
+                            params: {
+                                id: lot.id,
+                            },
+                        })
                     }
                 />
             ))}

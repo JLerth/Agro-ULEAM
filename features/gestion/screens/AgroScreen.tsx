@@ -1,18 +1,10 @@
-import { useState } from "react";
+import { router } from "expo-router";
 import { Sprout } from "lucide-react-native";
 
 import GestionLayout from "../components/gestionLayout";
 import GestionCard from "../components/gestionCard";
-
+import { agroLots } from "../data/agroLots";
 export default function AgricolaScreen() {
-    const [lots] = useState([
-        {
-            id: "--",
-            status: "--",
-            title: "--",
-            subtitle: "--",
-        },
-    ]);
     return (
         <GestionLayout
             firstStat={{
@@ -24,7 +16,7 @@ export default function AgricolaScreen() {
                 label: "--",
             }}
         >
-            {lots.map((lot) => (
+            {agroLots.map((lot) => (
                 <GestionCard
                     key={lot.id}
                     id={lot.id}
@@ -33,7 +25,12 @@ export default function AgricolaScreen() {
                     subtitle={lot.subtitle}
                     icon={<Sprout size={22} />}
                     onPress={() => {
-                        console.log("Ingresar al lote:", lot.id);
+                        router.push({
+                            pathname: "/(tabs)/(inicio)/detalle/agro",
+                            params: {
+                                id: lot.id,
+                            },
+                        })
                     }}
                 />
             ))}

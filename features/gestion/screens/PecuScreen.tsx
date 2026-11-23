@@ -1,18 +1,11 @@
-import { useState } from "react";
+import { router } from "expo-router";
 import { Sprout } from "lucide-react-native";
 
 import GestionLayout from "../components/gestionLayout";
 import GestionCard from "../components/gestionCard";
+import { pecuLots } from "../data/pecuLots";
 
 export default function PecuariaScreen() {
-    const [lots] = useState([
-        {
-            id: "--",
-            status: "--",
-            title: "--",
-            subtitle: "--",
-        },
-    ]);
     return (
         <GestionLayout
             firstStat={{
@@ -24,7 +17,7 @@ export default function PecuariaScreen() {
                 label: "--",
             }}
         >
-            {lots.map((lot) => (
+            {pecuLots.map((lot) => (
                 <GestionCard
                     key={lot.id}
                     id={lot.id}
@@ -32,9 +25,14 @@ export default function PecuariaScreen() {
                     title={lot.title}
                     subtitle={lot.subtitle}
                     icon={<Sprout size={22} />}
-                    onPress={() => {
-                        console.log("Ingresar al lote:", lot.id);
-                    }}
+                    onPress={() =>
+                        router.push({
+                            pathname: "/(tabs)/(inicio)/detalle/pecu",
+                            params: {
+                                id: lot.id,
+                            },
+                        })
+                    }
                 />
             ))}
         </GestionLayout>

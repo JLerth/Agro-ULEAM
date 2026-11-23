@@ -3,11 +3,14 @@ import { Modal, Pressable, ScrollView } from "react-native";
 import { Check, Pause, Pencil, Play, LayoutDashboard, Sprout, ShieldCheck, Package, ArrowLeftRight, } from "lucide-react-native";
 import { Text, View } from "@/components/Themed";
 
+import type { LotStatus } from "../../data/viveLots";
 import { detailStyles } from "../../styles/detail.styles";
 
 type ViveDetailProps = {
     readonly id: string;
     readonly name: string;
+    readonly status: LotStatus;
+    readonly onStatusChange: (status: LotStatus) => void;
 };
 
 type ViveSection =
@@ -25,10 +28,12 @@ const SECTION_TITLES: Record<ViveSection, string> = {
     movimientos: "Movimientos",
 };
 
-type LotStatus = "active" | "paused" | "finished";
-
-export default function ViveDetail({ id, name }: ViveDetailProps) {
-    const [status, setStatus] = useState<LotStatus>("active");
+export default function ViveDetail({
+    id,
+    name,
+    status,
+    onStatusChange,
+}: ViveDetailProps) {
     const [confirmVisible, setConfirmVisible] = useState(false);
 
     const [selectedSection, setSelectedSection] =
@@ -37,7 +42,7 @@ export default function ViveDetail({ id, name }: ViveDetailProps) {
     const isFinished = status === "finished";
 
     const handleFinish = () => {
-        setStatus("finished");
+        onStatusChange("finished");
         setConfirmVisible(false);
     };
 
@@ -84,7 +89,7 @@ export default function ViveDetail({ id, name }: ViveDetailProps) {
                         <View style={detailStyles.actions}>
                             <Pressable
                                 onPress={() =>
-                                    setStatus(
+                                    onStatusChange(
                                         status === "active" ? "paused" : "active"
                                     )
                                 }
