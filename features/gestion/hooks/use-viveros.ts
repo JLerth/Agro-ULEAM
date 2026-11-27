@@ -1,14 +1,7 @@
-import { useSyncExternalStore } from "react";
-
-import {
-    getViverosLots,
-    subscribeViverosLots,
-} from "../repositories/viverosLotsRepository";
+// hooks/use-viveros.ts
+import { useLots } from "./use-lots";
+import { viverosRepository } from "../repositories/viverosLotsRepository";
 
 export function useViveros() {
-    return useSyncExternalStore(
-        subscribeViverosLots,
-        getViverosLots,
-        getViverosLots,
-    );
+    return useLots(viverosRepository);
 }
