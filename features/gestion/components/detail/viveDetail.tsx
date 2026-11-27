@@ -1,15 +1,28 @@
 import { useState } from "react";
 import { Modal, Pressable, ScrollView } from "react-native";
-import { Check, Pause, Pencil, Play, LayoutDashboard, Sprout, ShieldCheck, Package, ArrowLeftRight, } from "lucide-react-native";
+import {
+    Check,
+    Pause,
+    Pencil,
+    Play,
+    LayoutDashboard,
+    Sprout,
+    ShieldCheck,
+    Package,
+    ArrowLeftRight,
+} from "lucide-react-native";
 import { Text, View } from "@/components/Themed";
 
-import type { LotStatus } from "../../data/viveLots";
+import {
+    VIVE_LOT_STATUS,
+    VIVE_STAGE_LABELS,
+    type LotStatus,
+    type ViveLot,
+} from "../../data/viveLots";
 import { detailStyles } from "../../styles/detail.styles";
 
 type ViveDetailProps = {
-    readonly id: string;
-    readonly name: string;
-    readonly status: LotStatus;
+    readonly lot: ViveLot;
     readonly onStatusChange: (status: LotStatus) => void;
 };
 
@@ -28,17 +41,65 @@ const SECTION_TITLES: Record<ViveSection, string> = {
     movimientos: "Movimientos",
 };
 
-export default function ViveDetail({
-    id,
-    name,
-    status,
-    onStatusChange,
-}: ViveDetailProps) {
-    const [confirmVisible, setConfirmVisible] = useState(false);
+const SECTION_OPTIONS: {
+    id: string;
+    options: {
+        key: ViveSection;
+        icon: typeof Sprout;
+    }[];
+}[] = [
+    {
+        id: "primary",
+        options: [
+            { key: "resumen", icon: LayoutDashboard },
+            { key: "etapas", icon: Sprout },
+            { key: "fitosanitario", icon: ShieldCheck },
+        ],
+    },
+    {
+        id: "secondary",
+        options: [
+            { key: "insumos", icon: Package },
+            { key: "movimientos", icon: ArrowLeftRight },
+        ],
+    },
+];
 
+function formatDate(isoDate: string) {
+    const [year, month, day] = isoDate.split("-");
+    return `${day}/${month}/${year}`;
+}
+
+function getSummaryRows(lot: ViveLot) {
+    const rows = [
+        { label: "Código", value: lot.id },
+        { label: "Especie", value: lot.title },
+        { label: "Cantidad", value: `${lot.quantity} plantas` },
+        { label: "Fecha de ingreso", value: formatDate(lot.entryDate) },
+        {
+            label: "Etapa inicial",
+            value: VIVE_STAGE_LABELS[lot.stage] ?? lot.stage,
+        },
+        { label: "Responsable", value: lot.responsible },
+        {
+            label: "Registrado",
+            value: new Date(lot.createdAt).toLocaleString("es-EC"),
+        },
+    ];
+
+    if (lot.observations) {
+        rows.push({ label: "Observaciones", value: lot.observations });
+    }
+
+    return rows;
+}
+
+export default function ViveDetail({ lot, onStatusChange }: ViveDetailProps) {
+    const [confirmVisible, setConfirmVisible] = useState(false);
     const [selectedSection, setSelectedSection] =
         useState<ViveSection>("resumen");
 
+    const { status } = lot;
     const isFinished = status === "finished";
 
     const handleFinish = () => {
@@ -46,18 +107,12 @@ export default function ViveDetail({
         setConfirmVisible(false);
     };
 
-    const STATUS_LABELS: Record<LotStatus, string> = {
-        active: "Activo",
-        paused: "Pausado",
-        finished: "Finalizado",
-    };
-
     return (
         <View style={detailStyles.container}>
             {/* Primera división */}
             <View style={detailStyles.headerSection}>
                 <View style={detailStyles.identification}>
-                    <Text style={detailStyles.id}>{id}</Text>
+                    <Text style={detailStyles.id}>{lot.id}</Text>
 
                     <Pressable
                         onPress={() => {}}
@@ -69,7 +124,7 @@ export default function ViveDetail({
                     </Pressable>
                 </View>
 
-                <Text style={detailStyles.name}>{name}</Text>
+                <Text style={detailStyles.name}>{lot.title}</Text>
 
                 <View style={detailStyles.statusSection}>
                     <View
@@ -81,7 +136,7 @@ export default function ViveDetail({
                         ]}
                     >
                         <Text style={detailStyles.statusText}>
-                            {STATUS_LABELS[status]}
+                            {VIVE_LOT_STATUS[status]}
                         </Text>
                     </View>
 
@@ -90,7 +145,7 @@ export default function ViveDetail({
                             <Pressable
                                 onPress={() =>
                                     onStatusChange(
-                                        status === "active" ? "paused" : "active"
+                                        status === "active" ? "paused" : "active",
                                     )
                                 }
                                 style={detailStyles.actionButton}
@@ -100,7 +155,6 @@ export default function ViveDetail({
                                 ) : (
                                     <Play size={16} color="#888" />
                                 )}
-
                                 <Text>
                                     {status === "active" ? "Pausar" : "Iniciar"}
                                 </Text>
@@ -120,70 +174,39 @@ export default function ViveDetail({
 
             {/* Segunda división: opciones */}
             <View style={detailStyles.optionsSection}>
-                <View style={detailStyles.optionsRow}>
-                    <Pressable
-                        style={[
-                            detailStyles.option,
-                            selectedSection === "resumen" && detailStyles.optionActive,
-                        ]}
-                        onPress={() => setSelectedSection("resumen")}
-                    >
-                        <LayoutDashboard size={20} />
-                        <Text>Resumen</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={[
-                            detailStyles.option,
-                            selectedSection === "etapas" && detailStyles.optionActive,
-                        ]}
-                        onPress={() => setSelectedSection("etapas")}
-                    >
-                        <Sprout size={20} />
-                        <Text>Etapas</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={[
-                            detailStyles.option,
-                            selectedSection === "fitosanitario" && detailStyles.optionActive,
-                        ]}
-                        onPress={() => setSelectedSection("fitosanitario")}
-                    >
-                        <ShieldCheck size={20} />
-                        <Text>Fitosanitario</Text>
-                    </Pressable>
-                </View>
-
-                <View style={detailStyles.optionsRow}>
-                    <Pressable
-                        style={[
-                            detailStyles.option,
-                            selectedSection === "insumos" && detailStyles.optionActive,
-                        ]}
-                        onPress={() => setSelectedSection("insumos")}
-                    >
-                        <Package size={20} />
-                        <Text>Insumos</Text>
-                    </Pressable>
-
-                    <Pressable
-                        style={[
-                            detailStyles.option,
-                            selectedSection === "movimientos" && detailStyles.optionActive,
-                        ]}
-                        onPress={() => setSelectedSection("movimientos")}
-                    >
-                        <ArrowLeftRight size={20} />
-                        <Text>Movimientos</Text>
-                    </Pressable>
-                </View>
+                {SECTION_OPTIONS.map(({ id, options }) => (
+                    <View key={id} style={detailStyles.optionsRow}>
+                        {options.map(({ key, icon: Icon }) => (
+                            <Pressable
+                                key={key}
+                                style={[
+                                    detailStyles.option,
+                                    selectedSection === key &&
+                                        detailStyles.optionActive,
+                                ]}
+                                onPress={() => setSelectedSection(key)}
+                            >
+                                <Icon size={20} />
+                                <Text>{SECTION_TITLES[key]}</Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                ))}
             </View>
+
             {/* Tercera división */}
             <ScrollView style={detailStyles.contentSection}>
                 <Text style={detailStyles.sectionTitle}>
                     {SECTION_TITLES[selectedSection]}
                 </Text>
+
+                {selectedSection === "resumen" &&
+                    getSummaryRows(lot).map((row) => (
+                        <View key={row.label}>
+                            <Text>{row.label}</Text>
+                            <Text>{row.value}</Text>
+                        </View>
+                    ))}
             </ScrollView>
 
             <Modal

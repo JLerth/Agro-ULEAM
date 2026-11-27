@@ -12,17 +12,16 @@ export default function ViveDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const lots = useViveros();
     const lot = lots.find((item) => item.id === id);
+
     return (
-        <GestionDetail 
+        <GestionDetail
             backRoute="/(tabs)/(inicio)/gestion/vive"
             title={DETAIL_HEADERS.vive.title}
             subtitle={DETAIL_HEADERS.vive.subtitle}
         >
             {lot && (
                 <ViveDetail
-                    id={lot.id}
-                    name={lot.title}
-                    status={lot.status}
+                    lot={lot}
                     onStatusChange={(nextStatus) =>
                         updateViveroLotStatus(lot.id, nextStatus)
                     }
