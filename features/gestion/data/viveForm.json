@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "formId": "vive_create",
+  "title": "Crear lote de vivero",
+  "maxQuestionsPerPage": 6,
+  "sections": [
+    {
+      "id": "plants",
+      "title": "Plantas",
+      "questions": [
+        {
+          "id": "species",
+          "question": "¿Qué especie o tipo de planta deseas registrar?",
+          "type": "select",
+          "required": true,
+          "optionsSource": "plant_species",
+          "allowCustom": true,
+          "placeholder": "Selecciona o escribe la especie"
+        },
+        {
+          "id": "initial_quantity",
+          "question": "¿Cuántas plantas tiene el lote?",
+          "type": "number",
+          "required": true,
+          "integer": true,
+          "min": 1,
+          "placeholder": "Ej: 120"
+        },
+        {
+          "id": "entry_date",
+          "question": "¿Cuál es la fecha de ingreso?",
+          "type": "date",
+          "required": true,
+          "maxDate": "today"
+        },
+        {
+          "id": "initial_stage",
+          "question": "¿En qué etapa se encuentran actualmente las plantas?",
+          "description": "Selecciona la etapa en la que ingresará el lote.",
+          "type": "select",
+          "required": true,
+          "options": [
+            { "label": "Patrón", "value": "rootstock" },
+            { "label": "Sin proceso", "value": "unprocessed" }
+          ]
+        },
+        {
+          "id": "observations",
+          "question": "¿Deseas agregar alguna observación?",
+          "description": "Incluye información adicional que ayude a identificar o describir el lote.",
+          "type": "textarea",
+          "required": false,
+          "maxLength": 500
+        }
+      ]
+    }
+  ],
+  "autoFields": [
+    { "id": "responsible", "type": "text", "source": "authenticated_user" },
+    { "id": "created_at", "type": "datetime", "generator": "current_datetime" }
+  ]
+}

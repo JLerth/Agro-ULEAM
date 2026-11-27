@@ -15,12 +15,14 @@ type GestionLayoutProps = {
         readonly label: string;
     };
     readonly children: React.ReactNode;
+    readonly onAdd?: () => void;
 };
 
 export default function GestionLayout({
     firstStat,
     secondStat,
     children,
+    onAdd,
 }: GestionLayoutProps) {
     return (
         <View style={gestionStyles.container}>
@@ -82,7 +84,10 @@ export default function GestionLayout({
                 </ScrollView>
 
                 {/* Añadir */}
-                <Pressable style={gestionStyles.addButton}>
+                <Pressable 
+                    style={gestionStyles.addButton} 
+                    onPress={onAdd}
+                >
                     <Plus size={26} color="#999" />
                 </Pressable>
             </View>
