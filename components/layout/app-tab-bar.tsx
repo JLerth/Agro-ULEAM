@@ -1,4 +1,5 @@
 import { useEffect, type ComponentProps } from "react";
+import { router, useSegments } from "expo-router";
 import { Animated, StyleSheet } from "react-native";
 import type { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,7 +14,7 @@ type TabBarRenderer = NonNullable<ComponentProps<typeof TopTabs>["tabBar"]>;
 export type TabBarProps = Parameters<TabBarRenderer>[0];
 
 const ICONS: Record<string, [IconName, IconName] | undefined> = {
-    index: ["home", "home-outline"],
+    "(inicio)": ["home", "home-outline"],
     weather: ["cloud", "cloud-outline"],
     dashboard: ["leaf", "leaf-outline"],
     config: ["settings", "settings-outline"],
@@ -35,6 +36,11 @@ export function AppTabBar({
 }: AppTabBarProps) {
     const theme = useColorScheme();
     const themeColors = Colors[theme];
+
+    const segments = useSegments();
+    const isGestionScreen =
+        (segments as readonly string[]).includes("gestion") ||
+        (segments as readonly string[]).includes("detalle");
 
     useEffect(() => {
         headerPosition.setValue(state.index);
@@ -76,7 +82,14 @@ export function AppTabBar({
                             canPreventDefault: true,
                         });
 
-                        if (!focused && !event.defaultPrevented) {
+                        if (event.defaultPrevented) return;
+
+                        if (route.name === "(inicio)" && focused && isGestionScreen) {
+                            router.replace("/(tabs)/(inicio)");
+                            return;
+                        }
+
+                        if (!focused) {
                             navigateToTab(route.key);
                         }
                     };

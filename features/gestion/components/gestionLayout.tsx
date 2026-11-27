@@ -1,0 +1,96 @@
+import { Pressable, ScrollView } from "react-native";
+import { router } from "expo-router";
+import { Text, View } from "@/components/Themed";
+import { ArrowLeft, SlidersHorizontal, Plus } from "lucide-react-native";
+
+import { gestionStyles } from "../styles/gestion.styles";
+
+type GestionLayoutProps = {
+    readonly firstStat: {
+        readonly value: string;
+        readonly label: string;
+    };
+    readonly secondStat: {
+        readonly value: string;
+        readonly label: string;
+    };
+    readonly children: React.ReactNode;
+    readonly onAdd?: () => void;
+};
+
+export default function GestionLayout({
+    firstStat,
+    secondStat,
+    children,
+    onAdd,
+}: GestionLayoutProps) {
+    return (
+        <View style={gestionStyles.container}>
+            {/* Sección superior */}
+            <View style={gestionStyles.topSection}>
+                <Pressable
+                    onPress={() => router.replace("/(tabs)/(inicio)")}
+                    style={gestionStyles.backButton}
+                >
+                    <ArrowLeft size={20} color="#999" />
+                    <Text>Regresar</Text>
+                </Pressable>
+            </View>
+
+            {/* Separador */}
+            <View style={gestionStyles.divider} />
+
+            {/* Contenido */}
+            <View style={gestionStyles.contentSection}>
+                {/* Resumen */}
+                <View style={gestionStyles.statsContainer}>
+                    <View style={gestionStyles.statItem}>
+                        <Text style={gestionStyles.statNumber}>
+                            {firstStat.value}
+                        </Text>
+                        <Text>{firstStat.label}</Text>
+                    </View>
+
+                    <View style={gestionStyles.statItem}>
+                        <Text style={gestionStyles.statNumber}>
+                            {secondStat.value}
+                        </Text>
+                        <Text>{secondStat.label}</Text>
+                    </View>
+                </View>
+
+                {/* Filtros */}
+                <View style={gestionStyles.filterBar}>
+                    <View style={gestionStyles.filterOptions}>
+                        <Pressable>
+                            <Text>Todos</Text>
+                        </Pressable>
+
+                        {/* Filtros dinámicos */}
+                    </View>
+
+                    <Pressable style={gestionStyles.filterButton}>
+                        <Text>Filtro</Text>
+                        <SlidersHorizontal size={20} color="#999" />
+                    </Pressable>
+                </View>
+
+                {/* Tarjetas */}
+                <ScrollView
+                    style={gestionStyles.scrollArea}
+                    contentContainerStyle={gestionStyles.scrollContent}
+                >
+                    {children}
+                </ScrollView>
+
+                {/* Añadir */}
+                <Pressable 
+                    style={gestionStyles.addButton} 
+                    onPress={onAdd}
+                >
+                    <Plus size={26} color="#999" />
+                </Pressable>
+            </View>
+        </View>
+    );
+}
