@@ -5,6 +5,7 @@ import { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "@/components/layout/appheader";
+import { isModuleKey } from "@/constants/modules";
 import {
     HEADER_ITEMS,
     GESTION_HEADERS,
@@ -34,24 +35,21 @@ export default function TabLayout() {
     );
     const segments = useSegments();
 
-    const isGestionScreen =
-        (segments as readonly string[]).includes("gestion") ||
-        (segments as readonly string[]).includes("detalle");
+    const segmentList = segments as readonly string[];
+    const currentSegment = segmentList.at(-1);
 
-    const currentSegment = (segments as readonly string[]).at(-1);
+    const isDetailScreen = segmentList.includes("detalle");
+    const isGestionScreen = segmentList.includes("gestion") || isDetailScreen;
+    const isInicioRoot = segmentList.includes("(inicio)") && !isGestionScreen;
 
-   const isDetailScreen = (segments as readonly string[]).includes("detalle");
+    const headers = isDetailScreen ? DETAIL_HEADERS : GESTION_HEADERS;
 
-    const gestionHeader = isDetailScreen
-        ? DETAIL_HEADERS[currentSegment ?? ""]
-        : GESTION_HEADERS[currentSegment ?? ""];
+    const gestionHeader: ScreenHeader | undefined = isModuleKey(currentSegment)
+        ? headers[currentSegment]
+        : undefined;
 
     const [lastGestionHeader, setLastGestionHeader] =
         useState<ScreenHeader | null>(null);
-
-    const isInicioRoot =
-    (segments as readonly string[]).includes("(inicio)") &&
-    !isGestionScreen;
 
     useEffect(() => {
         if (gestionHeader) {
