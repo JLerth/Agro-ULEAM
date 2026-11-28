@@ -1,19 +1,16 @@
 import { Animated, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import type { LucideIcon } from "lucide-react-native";
 
 import { View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import { tabBarStyles as styles } from "@/styles/tab-bar.styles";
-
-export type IconName = keyof typeof Ionicons.glyphMap;
 
 type ThemeColors = (typeof Colors)[keyof typeof Colors];
 
 interface TabBarItemProps {
     readonly index: number;
     readonly title: string;
-    readonly activeIcon: IconName;
-    readonly inactiveIcon: IconName;
+    readonly icon: LucideIcon;
     readonly focused: boolean;
     readonly position: Animated.AnimatedInterpolation<number>;
     readonly themeColors: ThemeColors;
@@ -23,8 +20,7 @@ interface TabBarItemProps {
 export function TabBarItem({
     index,
     title,
-    activeIcon,
-    inactiveIcon,
+    icon: Icon,
     focused,
     position,
     themeColors,
@@ -69,11 +65,19 @@ export function TabBarItem({
                 />
                 {/* Icono inactivo */}
                 <Animated.View style={[styles.iconLayer, { opacity: inactiveOpacity }]}>
-                    <Ionicons name={inactiveIcon} size={24} color={themeColors.tabIconDefault} />
+                    <Icon
+                        size={24}
+                        strokeWidth={1.75}
+                        color={themeColors.tabIconDefault}
+                    />
                 </Animated.View>
                 {/* Icono activo */}
                 <Animated.View style={[styles.iconLayer, { opacity: activeOpacity }]}>
-                    <Ionicons name={activeIcon} size={24} color={themeColors.tabIconSelected} />
+                    <Icon
+                        size={24}
+                        strokeWidth={2.25}
+                        color={themeColors.tabIconSelected}
+                    />
                 </Animated.View>
             </Animated.View>
 
