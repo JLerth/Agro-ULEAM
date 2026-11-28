@@ -3,8 +3,9 @@ import Colors from "@/constants/Colors";
 
 type Theme = "light" | "dark";
 
-export function homeStyles(theme: Theme) {
+export function homeStyles(theme: Theme, isWide: boolean = false) {
     const colors = Colors[theme];
+    const horizontalPadding = isWide ? 32 : 16;
 
     return StyleSheet.create({
         container: {
@@ -14,16 +15,17 @@ export function homeStyles(theme: Theme) {
             flex: 1,
         },
         content: {
-            paddingHorizontal: 16,
+            paddingHorizontal: horizontalPadding,
             paddingTop: 16,
             paddingBottom: 16,
             gap: 20,
+            width: "100%",
         },
-        title: {
-            fontSize: 26,
-            fontWeight: "700",
-            color: colors.text,
-        },
+        // title: {
+        //     fontSize: 26,
+        //     fontWeight: "700",
+        //     color: colors.text,
+        // },
         subtitle: {
             fontSize: 13,
             fontWeight: "500",
@@ -31,39 +33,47 @@ export function homeStyles(theme: Theme) {
             textTransform: "uppercase",
             color: colors.tabIconDefault,
         },
-        grid: {
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            rowGap: 14,
-        },
+
+        // Celular: 2 columnas. Pantalla ancha: 1 columna a todo el ancho.
+        grid: isWide
+            ? {
+                  gap: 12,
+              }
+            : {
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                  rowGap: 14,
+              },
+
         card: {
-            width: "48%",
-            aspectRatio: 1,
+            ...(isWide
+                ? {
+                      flexDirection: "row" as const,
+                      alignItems: "center" as const,
+                      gap: 16,
+                  }
+                : {
+                      width: "48%" as const,
+                      gap: 16,
+                  }),
             padding: 16,
             borderRadius: 20,
             backgroundColor: colors.surface,
             borderWidth: 1,
             borderColor: colors.border,
-            justifyContent: "space-between",
         },
         cardPressed: {
             opacity: 0.85,
             transform: [{ scale: 0.98 }],
         },
+
+        // Solo celular
         cardTop: {
             flexDirection: "row",
             alignItems: "flex-start",
             justifyContent: "space-between",
             backgroundColor: "transparent",
-        },
-        cardIcon: {
-            width: 52,
-            height: 52,
-            borderRadius: 16,
-            backgroundColor: colors.primary + "18",
-            alignItems: "center",
-            justifyContent: "center",
         },
         cardInfo: {
             gap: 4,
@@ -74,9 +84,31 @@ export function homeStyles(theme: Theme) {
             fontWeight: "700",
             color: colors.text,
         },
-        cardSubtitle: {
-            fontSize: 12,
-            color: colors.tabIconDefault,
+
+        // Solo pantalla ancha
+        cardTitleWide: {
+            flex: 1,
+            fontSize: 17,
+            fontWeight: "700",
+            color: colors.text,
+        },
+
+        cardIcon: {
+            width: 52,
+            height: 52,
+            borderRadius: 16,
+            backgroundColor: colors.primary + "18",
+            alignItems: "center",
+            justifyContent: "center",
+        },
+
+        footer: {
+            paddingHorizontal: horizontalPadding,
+            paddingTop: 12,
+            paddingBottom: 12,
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+            backgroundColor: colors.background,
         },
         addBar: {
             minHeight: 58,
@@ -94,14 +126,6 @@ export function homeStyles(theme: Theme) {
             fontSize: 16,
             fontWeight: "700",
             color: "#FFFFFF",
-        },
-        footer: {
-            paddingHorizontal: 16,
-            paddingTop: 12,
-            paddingBottom: 12,
-            borderTopWidth: 1,
-            borderTopColor: colors.border,
-            backgroundColor: colors.background,
         },
     });
 }

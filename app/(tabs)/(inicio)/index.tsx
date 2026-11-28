@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { router } from "expo-router";
-import { Pressable, ScrollView } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions } from "react-native";
 import { ChevronRight, CirclePlus } from "lucide-react-native";
 
 import { MODULE_LIST } from "@/constants/modules";
@@ -9,10 +9,15 @@ import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { homeStyles } from "@/styles/home.styles";
 
+const WIDE_BREAKPOINT = 600;
+
 export default function HomeScreen() {
     const theme = useColorScheme();
     const colors = Colors[theme];
-    const styles = useMemo(() => homeStyles(theme), [theme]);
+    const { width } = useWindowDimensions();
+    const isWide = width >= WIDE_BREAKPOINT;
+
+    const styles = useMemo(() => homeStyles(theme, isWide), [theme, isWide]);
 
     return (
         <View style={styles.container}>
@@ -22,7 +27,7 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <View>
-                    <Text style={styles.title}>Inicio</Text>
+                    {/* <Text style={styles.title}>Inicio</Text> */}
                     <Text style={styles.subtitle}>Gestión agropecuaria</Text>
                 </View>
 
@@ -33,30 +38,32 @@ export default function HomeScreen() {
                         return (
                             <Pressable
                                 key={item.key}
-                                style={({ pressed }) => [
-                                    styles.card,
-                                    pressed && styles.cardPressed,
-                                ]}
+                                style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
                                 onPress={() => router.push(item.route)}
                                 accessibilityRole="button"
-                                accessibilityLabel={`${item.name}. ${item.description}`}
+                                accessibilityLabel={item.name}
                             >
-                                <View style={styles.cardTop}>
-                                    <View style={styles.cardIcon}>
-                                        <Icon size={28} color={colors.primary} />
-                                    </View>
-                                    <ChevronRight
-                                        size={20}
-                                        color={colors.tabIconDefault}
-                                    />
-                                </View>
-
-                                <View style={styles.cardInfo}>
-                                    <Text style={styles.cardTitle}>{item.name}</Text>
-                                    <Text style={styles.cardSubtitle}>
-                                        {item.description}
-                                    </Text>
-                                </View>
+                                {isWide ? (
+                                    <>
+                                        <View style={styles.cardIcon}>
+                                            <Icon size={28} color={colors.primary} />
+                                        </View>
+                                        <Text style={styles.cardTitleWide}>{item.name}</Text>
+                                        <ChevronRight size={20} color={colors.tabIconDefault} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <View style={styles.cardTop}>
+                                            <View style={styles.cardIcon}>
+                                                <Icon size={28} color={colors.primary} />
+                                            </View>
+                                            <ChevronRight size={20} color={colors.tabIconDefault} />
+                                        </View>
+                                        <View style={styles.cardInfo}>
+                                            <Text style={styles.cardTitle}>{item.name}</Text>
+                                        </View>
+                                    </>
+                                )}
                             </Pressable>
                         );
                     })}

@@ -16,11 +16,11 @@ export const HEADER_ITEMS: ScreenHeader[] = [
     },
     {
         title: "Panel",
-        subtitle: "Seguimiento de la producción",
+        subtitle: "Seguimiento",
     },
     {
         title: "Configuración",
-        subtitle: "Personalización de la aplicación",
+        subtitle: "Personalización",
     },
 ];
 
