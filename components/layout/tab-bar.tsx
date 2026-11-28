@@ -1,8 +1,9 @@
-import { Animated, Pressable, StyleSheet } from "react-native";
+import { Animated, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
+import { tabBarStyles as styles } from "@/styles/tab-bar.styles";
 
 export type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -78,21 +79,22 @@ export function TabBarItem({
 
             <View style={styles.labelBox}>
                 <Animated.Text
-                    style={{
-                        color: themeColors.tabIconDefault,
-                        fontSize: 11,
-                    }}
+                    style={[
+                        styles.label,
+                        { color: themeColors.tabIconDefault },
+                    ]}
                 >
                     {title}
                 </Animated.Text>
 
                 <Animated.Text
-                    style={{
-                        position: "absolute",
-                        color: themeColors.tabIconSelected,
-                        fontSize: 11,
-                        opacity: activeOpacity,
-                    }}
+                    style={[
+                        styles.activeLabel,
+                        {
+                            color: themeColors.tabIconSelected,
+                            opacity: activeOpacity,
+                        },
+                    ]}
                 >
                     {title}
                 </Animated.Text>
@@ -100,35 +102,3 @@ export function TabBarItem({
         </Pressable>
     );
 }
-
-const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    iconBox: {
-        width: 52,
-        height: 32,
-        borderRadius: 16,
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-    },
-    bubble: {
-        position: "absolute",
-        width: 52,
-        height: 32,
-        borderRadius: 16,
-    },
-    iconLayer: {
-        position: "absolute",
-    },
-    labelBox: {
-        marginTop: 3,
-        position: "relative",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "transparent",
-    },
-});

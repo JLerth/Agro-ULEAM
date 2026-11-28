@@ -1,12 +1,13 @@
 import { useEffect, type ComponentProps } from "react";
 import { router, useSegments } from "expo-router";
-import { Animated, StyleSheet } from "react-native";
+import { Animated } from "react-native";
 import type { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { tabBarStyles as styles } from "@/styles/tab-bar.styles";
 
 import { TabBarItem, type IconName } from "./tab-bar";
 
@@ -112,13 +113,3 @@ export function AppTabBar({
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    bar: {
-        height: 85,
-        flexDirection: "row",
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderTopWidth: 1,
-    },
-});

@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { useRef, useEffect, useState, useMemo } from "react";
+import { Animated } from "react-native";
 import { useSegments } from "expo-router";
 import { TopTabs } from "expo-router/js-top-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,7 +14,7 @@ import {
 import { AppTabBar, type TabBarProps, } from "@/components/layout/app-tab-bar";
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
+import { layoutStyles } from "@/styles/layout.styles";
 
 function createTabBar(headerPosition: Animated.Value) {
     return (props: TabBarProps) => (
@@ -28,6 +28,10 @@ function createTabBar(headerPosition: Animated.Value) {
 export default function TabLayout() {
     const theme = useColorScheme();
 
+    const styles = useMemo(
+        () => layoutStyles(theme),
+        [theme]
+    );
     const segments = useSegments();
 
     const isGestionScreen =
@@ -75,7 +79,7 @@ export default function TabLayout() {
 
     return (
         <SafeAreaView
-            style={[styles.root, { backgroundColor: Colors[theme].background }]}
+            style={styles.root}
             edges={["top"]}
         >
             <View colorName="background" style={styles.container}>
@@ -123,18 +127,3 @@ export default function TabLayout() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    root: {
-        flex: 1,
-    },
-    container: {
-        flex: 1,
-    },
-    header: {
-        paddingHorizontal: 8,
-        paddingTop: 8,
-        paddingBottom: 8,
-        backgroundColor: "transparent",
-    },
-});
